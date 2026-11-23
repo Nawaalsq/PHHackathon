@@ -1,0 +1,263 @@
+{
+  "data": "clean/sample1_dev_seeded",
+  "engine_summary": {
+    "data": "clean/sample1_dev_seeded",
+    "rules": 26,
+    "proposals": false,
+    "claims": 146694,
+    "decisions": {
+      "paid": 135452,
+      "partial": 5107,
+      "pended": 3450,
+      "denied": 2218,
+      "rejected": 467
+    },
+    "hits_by_rule": {
+      "EDIT-20": 2700,
+      "FWA-02": 1832,
+      "EDIT-21": 1725,
+      "EDIT-30": 1547,
+      "COV-1.1": 1256,
+      "COV-2.2": 1173,
+      "EDIT-31": 1029,
+      "EDIT-01": 737,
+      "EDIT-11": 504,
+      "DQ-01": 467,
+      "DQ-03": 412,
+      "EDIT-04": 389,
+      "FWA-01": 347,
+      "EDIT-02": 309,
+      "FWA-03": 285,
+      "COV-1.3": 163,
+      "EDIT-10": 152,
+      "COV-2.4": 86,
+      "EDIT-12": 81,
+      "EDIT-03": 43,
+      "COV-1.2": 27,
+      "EDIT-13": 15,
+      "COV-2.3": 11,
+      "COV-3.1": 11,
+      "COV-2.1": 7
+    },
+    "fwa_flagged_claims": 2141,
+    "allowed_amt": 149606089.17,
+    "payable_amt": 138649941.69,
+    "plan_paid_amt": 123374924.27,
+    "conflicts": 0,
+    "superseded": [],
+    "seconds": 6.5
+  },
+  "boundary": {
+    "cases": 37,
+    "decision_accuracy": 1.0,
+    "rule_trace_accuracy": 1.0,
+    "failures": []
+  },
+  "anomalies": {
+    "by_pattern": {
+      "consecutive_days": {
+        "difficulty": "easy",
+        "detector": "FWA-01",
+        "seeded": 75,
+        "detected": 75,
+        "recall": 1.0
+      },
+      "exact_duplicate": {
+        "difficulty": "easy",
+        "detector": "EDIT-03",
+        "seeded": 20,
+        "detected": 20,
+        "recall": 1.0
+      },
+      "excluded_provider": {
+        "difficulty": "easy",
+        "detector": "COV-1.3",
+        "seeded": 162,
+        "detected": 162,
+        "recall": 1.0
+      },
+      "facility_over_servicing": {
+        "difficulty": "easy",
+        "detector": "FWA-02",
+        "seeded": 246,
+        "detected": 246,
+        "recall": 1.0
+      },
+      "service_after_death": {
+        "difficulty": "easy",
+        "detector": "COV-1.2",
+        "seeded": 25,
+        "detected": 25,
+        "recall": 1.0
+      },
+      "unbundling": {
+        "difficulty": "easy",
+        "detector": "EDIT-20",
+        "seeded": 20,
+        "detected": 20,
+        "recall": 1.0
+      },
+      "alternate_days": {
+        "difficulty": "subtle",
+        "detector": "FWA-01",
+        "seeded": 75,
+        "detected": 75,
+        "recall": 1.0
+      },
+      "consecutive_3_days": {
+        "difficulty": "subtle",
+        "detector": "FWA-01",
+        "seeded": 45,
+        "detected": 45,
+        "recall": 1.0
+      },
+      "facility_3x": {
+        "difficulty": "subtle",
+        "detector": "FWA-02",
+        "seeded": 146,
+        "detected": 146,
+        "recall": 1.0
+      },
+      "near_duplicate_amount": {
+        "difficulty": "subtle",
+        "detector": "EDIT-03|EDIT-04",
+        "seeded": 10,
+        "detected": 8,
+        "recall": 0.8
+      },
+      "near_duplicate_next_day": {
+        "difficulty": "subtle",
+        "detector": "EDIT-03|EDIT-04",
+        "seeded": 10,
+        "detected": 0,
+        "recall": 0.0
+      },
+      "unbundling_other_component": {
+        "difficulty": "subtle",
+        "detector": "no_rule",
+        "seeded": 20,
+        "detected": 0,
+        "recall": 0.0
+      },
+      "same_day_mass_billing": {
+        "difficulty": "novel",
+        "detector": "any_fwa",
+        "seeded": 60,
+        "detected": 0,
+        "recall": 0.0
+      },
+      "upcoding_drift": {
+        "difficulty": "novel",
+        "detector": "any_fwa",
+        "seeded": 100,
+        "detected": 2,
+        "recall": 0.02
+      }
+    },
+    "by_difficulty": {
+      "easy": {
+        "seeded": 548,
+        "detected": 548,
+        "recall": 1.0
+      },
+      "subtle": {
+        "seeded": 306,
+        "detected": 274,
+        "recall": 0.895
+      },
+      "novel": {
+        "seeded": 160,
+        "detected": 2,
+        "recall": 0.013
+      }
+    },
+    "overall_recall": 0.813,
+    "fwa_queue_size": 2141,
+    "fwa_seeded_claims": 528,
+    "fwa_seeded_in_queue": 528,
+    "claims_to_open_for_80pct": 616,
+    "queue_precision_at_that_point": 0.687,
+    "subtle_novel_fwa_claims_reaching_queue": "285/446"
+  },
+  "conflicts": {
+    "expected": 9,
+    "detected": 9,
+    "recall": 1.0,
+    "winner_accuracy": 1.0,
+    "unexpected_conflicts": [],
+    "detail": [
+      {
+        "pair": "PROP-01 + COV-2.1",
+        "type": "limit clash (Silver physio 10 vs 6)",
+        "detected": true,
+        "winner_expected": "PROP-01",
+        "winner_got": "PROP-01",
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-02 + COV-2.1",
+        "type": "exclusion shadows physio limit on Basic",
+        "detected": true,
+        "winner_expected": "PROP-02",
+        "winner_got": "PROP-02",
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-02 + COV-3.1",
+        "type": "exclusion shadows Basic waiting period",
+        "detected": true,
+        "winner_expected": "PROP-02",
+        "winner_got": "PROP-02",
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-03 + EDIT-10",
+        "type": "unit cap clash 36415 (2 vs 3)",
+        "detected": true,
+        "winner_expected": "PROP-03",
+        "winner_got": "PROP-03",
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-04 + COV-2.2",
+        "type": "J-code exclusion shadows dialysis drug rule",
+        "detected": true,
+        "winner_expected": "PROP-04",
+        "winner_got": "PROP-04",
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-04 + PROP-05",
+        "type": "ESRD exception unreachable under J-code exclusion",
+        "detected": true,
+        "winner_expected": "PROP-04",
+        "winner_got": "PROP-04",
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-06",
+        "type": "modifier exception with no base pair edit",
+        "detected": true,
+        "winner_expected": NaN,
+        "winner_got": NaN,
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-07 + COV-2.3",
+        "type": "overlapping versions of the 80053 limit",
+        "detected": true,
+        "winner_expected": "PROP-07",
+        "winner_got": "PROP-07",
+        "winner_ok": true
+      },
+      {
+        "pair": "PROP-08 + EDIT-21",
+        "type": "redundant duplicate of a live edit",
+        "detected": true,
+        "winner_expected": "EDIT-21",
+        "winner_got": "EDIT-21",
+        "winner_ok": true
+      }
+    ]
+  }
+}

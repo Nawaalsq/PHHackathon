@@ -1,0 +1,27 @@
+# --- Data (regenerable / too large for git) ---
+# Raw DE-SynPUF CSVs — download from CMS instead of committing (~2 GB)
+*.csv
+# Clean parquet tables — regenerable via load_desynpuf.py
+clean/
+# Precomputed engine results — regenerable via precompute.py
+results/
+
+# --- Node / frontend ---
+node_modules/
+web/dist/
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- Logs, caches, scratch ---
+*.log
+.ai_cache/
+Untitled*.ipynb
+.ipynb_checkpoints/
+
+# --- Old copies kept locally ---
+rd_engine_old/
+rd_engine_o1/

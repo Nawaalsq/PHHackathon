@@ -1,0 +1,12 @@
+# Answer key for the conflict detector: clashes planted in rules/conflict_seeds.yaml.
+# Pairs are unordered. "winner" is what the precedence policy should pick.
+conflicts:
+  - {pair: [PROP-01, COV-2.1], type: limit clash (Silver physio 10 vs 6), winner: PROP-01}
+  - {pair: [PROP-02, COV-2.1], type: exclusion shadows physio limit on Basic, winner: PROP-02}
+  - {pair: [PROP-02, COV-3.1], type: exclusion shadows Basic waiting period, winner: PROP-02}
+  - {pair: [PROP-03, EDIT-10], type: unit cap clash 36415 (2 vs 3), winner: PROP-03}
+  - {pair: [PROP-04, COV-2.2], type: J-code exclusion shadows dialysis drug rule, winner: PROP-04}
+  - {pair: [PROP-04, PROP-05], type: ESRD exception unreachable under J-code exclusion, winner: PROP-04}
+  - {pair: [PROP-06], type: modifier exception with no base pair edit, winner: null}
+  - {pair: [PROP-07, COV-2.3], type: overlapping versions of the 80053 limit, winner: PROP-07}
+  - {pair: [PROP-08, EDIT-21], type: redundant duplicate of a live edit, winner: EDIT-21}

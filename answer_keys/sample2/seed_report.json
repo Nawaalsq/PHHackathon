@@ -1,0 +1,16 @@
+{
+  "service_after_death": 25,
+  "consecutive_days": 75,
+  "excluded_providers": 8,
+  "facility_over_servicing": 269,
+  "unbundling": 20,
+  "exact_duplicate": 20,
+  "excluded_provider_claims": 309,
+  "seed": 2026,
+  "scale": 1.0,
+  "boundary_cases": 37,
+  "new_claims": 519,
+  "new_lines": 843,
+  "claims_total": 848506,
+  "members_with_plans": 116432
+}

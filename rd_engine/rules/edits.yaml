@@ -1,0 +1,172 @@
+# Edit layer (RD04) and data-quality gate. Our own rules in the structure of
+# NCCI-style edits. Not authoritative NCCI/CPT adjudication.
+#
+# Outcomes: reject (data quality), deny, deny_line, refer
+
+rules:
+  # ---------------------------------------------------------- data quality
+  - id: DQ-01
+    clause: "DQ1 Claims with negative payment amounts are rejected for correction."
+    layer: data_quality
+    kind: flag
+    params: {column: flag_negative_payment}
+    outcome: reject
+    priority: 100
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Negative payment amount"
+
+  - id: DQ-02
+    clause: "DQ2 Claims without service dates are rejected."
+    layer: data_quality
+    kind: flag
+    params: {column: flag_missing_dates}
+    outcome: reject
+    priority: 100
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Missing service dates"
+
+  - id: DQ-03
+    clause: "DQ3 Inpatient claims where billed days differ from length of stay by more than 1 day are pended."
+    layer: data_quality
+    kind: flag
+    params: {column: flag_util_days_mismatch}
+    outcome: refer
+    priority: 40
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Billed days do not match length of stay"
+
+  # ---------------------------------------------------------- claim edits
+  - id: EDIT-01
+    clause: "E1 Outpatient services dated during an inpatient stay are bundled into the inpatient claim and not paid separately."
+    layer: edit
+    kind: flag
+    params: {column: flag_op_during_ip_stay}
+    outcome: deny
+    priority: 80
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Outpatient service during an inpatient stay"
+
+  - id: EDIT-02
+    clause: "E2 Overlapping inpatient stays for the same member are pended for review."
+    layer: edit
+    kind: flag
+    params: {column: flag_overlapping_stay}
+    outcome: refer
+    priority: 70
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Overlaps another inpatient stay"
+
+  - id: EDIT-03
+    clause: "E3 Exact duplicate claims (same member, dates, provider and amount) are denied."
+    layer: edit
+    kind: flag
+    params: {column: flag_exact_duplicate}
+    outcome: deny
+    fwa: true
+    priority: 85
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Exact duplicate of an earlier claim"
+
+  - id: EDIT-04
+    clause: "E4 The same code for the same member on the same date on a second claim is denied as a duplicate line."
+    layer: edit
+    kind: duplicate_line_same_day
+    outcome: deny_line
+    priority: 75
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Same code already billed for this member on {service_dt}"
+
+  # ---------------------------------------------------------- unit caps
+  - id: EDIT-10
+    clause: "E10 Venipuncture (36415): max 3 units per claim."
+    layer: edit
+    kind: unit_cap
+    family: unit-36415
+    scope: {codes: ["36415"]}
+    params: {max_units: 3}
+    outcome: deny_line
+    priority: 65
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "{units} units billed; cap {max_units}"
+
+  - id: EDIT-11
+    clause: "E11 Physiotherapy (97110): max 12 units per claim."
+    layer: edit
+    kind: unit_cap
+    family: unit-97110
+    scope: {codes: ["97110"]}
+    params: {max_units: 12}
+    outcome: deny_line
+    priority: 65
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "{units} units billed; cap {max_units}"
+
+  - id: EDIT-12
+    clause: "E12 Complete blood count (85025): max 4 units per claim."
+    layer: edit
+    kind: unit_cap
+    family: unit-85025
+    scope: {codes: ["85025"]}
+    params: {max_units: 4}
+    outcome: deny_line
+    priority: 65
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "{units} units billed; cap {max_units}"
+
+  - id: EDIT-13
+    clause: "E13 Iron sucrose (J1756): max 5 units per claim."
+    layer: edit
+    kind: unit_cap
+    family: unit-J1756
+    scope: {codes: ["J1756"]}
+    params: {max_units: 5}
+    outcome: deny_line
+    priority: 65
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "{units} units billed; cap {max_units}"
+
+  # ---------------------------------------------------------- pair edits
+  - id: EDIT-20
+    clause: "E20 Basic metabolic panel (80048) is a component of the comprehensive panel (80053) and is not paid when both are on the same claim."
+    layer: edit
+    kind: pair_edit
+    family: pair-80053-80048
+    params: {column1: "80053", column2: "80048"}
+    outcome: deny_line
+    priority: 70
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "80048 bundled into 80053 on the same claim"
+
+  - id: EDIT-21
+    clause: "E21 Blood count without differential (85027) is not paid with the full blood count (85025) on the same claim."
+    layer: edit
+    kind: pair_edit
+    family: pair-85025-85027
+    params: {column1: "85025", column2: "85027"}
+    outcome: deny_line
+    priority: 70
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "85027 bundled into 85025 on the same claim"
+
+  # ---------------------------------------------------------- companion edits
+  - id: EDIT-30
+    clause: "E30 Sedation drugs (J2250 midazolam, J3010 fentanyl) need a surgical or endoscopy procedure (10000-69999) on the same claim; otherwise the claim is pended."
+    layer: edit
+    kind: requires_companion
+    scope: {codes: ["J2250", "J3010"]}
+    params: {companion_ranges: [[10000, 69999]]}
+    outcome: refer
+    priority: 60
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Sedation drug {code} without a procedure on the claim"
+
+  - id: EDIT-31
+    clause: "E31 Contrast agent (Q9967) needs an imaging code (70000-79999) on the same claim; otherwise the claim is pended."
+    layer: edit
+    kind: requires_companion
+    scope: {codes: ["Q9967"]}
+    params: {companion_ranges: [[70000, 79999]]}
+    outcome: refer
+    priority: 60
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Contrast agent without an imaging code on the claim"

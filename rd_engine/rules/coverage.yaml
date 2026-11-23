@@ -1,0 +1,114 @@
+# Coverage layer (RD02). Fictional benefit clauses keyed to codes in the
+# DE-SynPUF outpatient data. Each rule = one clause.
+#
+# Fields: id, clause (source text), layer, kind, scope, params, outcome,
+#         priority (higher wins), effective [from, to], reason
+# Outcomes: deny (whole claim), deny_line, refer (pend for review), allow (grant)
+# Kinds are implemented in engine.py.
+
+rules:
+  - id: COV-1.1
+    clause: "1.1 Outpatient services are covered only for members with Part B cover in the service year."
+    layer: coverage
+    kind: eligibility_part_b
+    scope: {claim_types: [outpatient]}
+    outcome: deny
+    refer_if_no_record: true
+    priority: 90
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "No Part B cover in {service_year}"
+
+  - id: COV-1.2
+    clause: "1.2 No benefit is payable for services after the member's date of death."
+    layer: coverage
+    kind: after_death
+    scope: {}
+    outcome: deny
+    fwa: true
+    priority: 95
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Service dated after member's death ({death_dt})"
+
+  - id: COV-1.3
+    clause: "1.3 Services by a provider on the exclusion list are not covered from the exclusion date."
+    layer: coverage
+    kind: excluded_provider
+    scope: {}
+    outcome: deny
+    fwa: true
+    priority: 95
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Provider {provider_id} excluded since {excl_dt}"
+
+  - id: COV-2.1
+    clause: "2.1 Physiotherapy (97110): sessions per policy year are limited by plan: Gold 12, Silver 6, Basic 4."
+    layer: coverage
+    kind: frequency_limit
+    family: physio-limit
+    scope: {codes: ["97110"]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {GOLD: 12, SILVER: 6, BASIC: 4}
+    outcome: deny_line
+    priority: 50
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Physio session {rank} in policy year; plan limit {limit}"
+
+  - id: COV-2.2
+    clause: "2.2 Dialysis drugs (Q4081, J2501, J1756, J1270) are covered only for members with end-stage renal disease. Members with chronic kidney disease but no ESRD flag are referred for medical review."
+    layer: coverage
+    kind: requires_condition
+    scope: {codes: ["Q4081", "J2501", "J1756", "J1270"]}
+    params:
+      conditions_any: [esrd]
+      refer_if_any: [cc_chronic_kidney]
+    outcome: deny_line
+    priority: 60
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Dialysis drug without ESRD on record"
+
+  - id: COV-2.3
+    clause: "2.3 Comprehensive metabolic panel (80053): max 4 per policy year; 6 for members with diabetes."
+    layer: coverage
+    kind: frequency_limit
+    family: cmp-limit
+    scope: {codes: ["80053"]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {GOLD: 4, SILVER: 4, BASIC: 4}
+      exceptions:
+        - {condition: cc_diabetes, limit: 6}
+    outcome: deny_line
+    priority: 50
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Metabolic panel {rank} in policy year; limit {limit}"
+
+  - id: COV-2.4
+    clause: "2.4 HbA1c test (83036): max 1 per policy year; 4 for members with diabetes."
+    layer: coverage
+    kind: frequency_limit
+    family: hba1c-limit
+    scope: {codes: ["83036"]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {GOLD: 1, SILVER: 1, BASIC: 1}
+      exceptions:
+        - {condition: cc_diabetes, limit: 4}
+    outcome: deny_line
+    priority: 50
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "HbA1c test {rank} in policy year; limit {limit}"
+
+  - id: COV-3.1
+    clause: "3.1 Basic plan: 90-day waiting period for physiotherapy (97110) from the policy start date."
+    layer: coverage
+    kind: waiting_period
+    scope: {codes: ["97110"], plans: [BASIC]}
+    params: {days: 90}
+    outcome: deny_line
+    priority: 55
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Within 90-day waiting period (policy start {policy_start})"

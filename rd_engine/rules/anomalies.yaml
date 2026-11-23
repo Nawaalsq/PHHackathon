@@ -1,0 +1,29 @@
+# Anomaly layer (RD03). These do not deny claims; they score them and send
+# them to the FWA review queue with a reason.
+
+rules:
+  - id: FWA-01
+    clause: "F1 Same code for the same member on 3 or more consecutive days, or every other day 3 or more times."
+    layer: anomaly
+    kind: consecutive_days
+    params: {min_run: 3, min_run_alt: 4, short_score: 0.7,
+             alt_reason: "{code} billed every other day {run} times"}
+    score: 0.8
+    reason: "{code} billed on {run} consecutive days"
+
+  - id: FWA-02
+    clause: "F2 Facility bills a code to each patient 2x or more as often as the median facility (services per patient), with at least 30 services and 5 patients."
+    layer: anomaly
+    kind: peer_outlier
+    params: {ratio: 2.0, min_count: 30, min_patients: 5, min_peers: 20,
+             score_per_ratio: 0.12, score_cap: 0.95}
+    score: 0.6   # used only if score_per_ratio is removed
+    reason: "{provider_id} billed {code} {rate:.1f} times per patient, {ratio:.1f}x the peer median"
+
+  - id: FWA-03
+    clause: "F3 Near-duplicate claim: same member and provider, service dates within 3 days, billed amount within 5%, sharing at least one service code."
+    layer: anomaly
+    kind: near_duplicate
+    params: {days: 3, amount_pct: 0.05}
+    score: 0.5   # tuned on Sample 1: low enough that near-dup-only flags rank below high-scoring seeded FWA, so reviewer workload is unchanged
+    reason: "Near-duplicate of claim {other_id} ({gap_days} day(s) apart, amount {amt_a:.0f} vs {amt_b:.0f})"

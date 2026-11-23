@@ -1,0 +1,101 @@
+# Rules proposed by "policy analysts" and under review. Some of them clash
+# with the live rule set on purpose. The engine's conflict detector should
+# find the clashes; the answer key is in answer_keys/expected_conflicts.yaml
+# (kept separately so the detector can't peek).
+#
+# Load these with --with-proposals (or include_proposals=True in run()).
+
+rules:
+  - id: PROP-01
+    clause: "Proposal: Silver physiotherapy limit raised to 10 sessions per policy year."
+    layer: coverage
+    kind: frequency_limit
+    family: physio-limit
+    scope: {codes: ["97110"], plans: [SILVER]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {SILVER: 10}
+    outcome: deny_line
+    priority: 50
+    effective: ["2009-01-01", "2099-12-31"]
+    reason: "Physio session {rank} in policy year; plan limit {limit}"
+
+  - id: PROP-02
+    clause: "Proposal: Basic plan excludes physiotherapy (97110)."
+    layer: coverage
+    kind: exclusion
+    scope: {codes: ["97110"], plans: [BASIC]}
+    outcome: deny_line
+    priority: 58
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Physiotherapy excluded on Basic plan"
+
+  - id: PROP-03
+    clause: "Proposal: Venipuncture (36415) max 2 units per claim."
+    layer: edit
+    kind: unit_cap
+    family: unit-36415
+    scope: {codes: ["36415"]}
+    params: {max_units: 2}
+    outcome: deny_line
+    priority: 65
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "{units} units billed; cap {max_units}"
+
+  - id: PROP-04
+    clause: "Proposal: Basic plan excludes all J-code drugs."
+    layer: coverage
+    kind: exclusion
+    scope: {code_prefix: ["J"], plans: [BASIC]}
+    outcome: deny_line
+    priority: 85
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "J-code drugs excluded on Basic plan"
+
+  - id: PROP-05
+    clause: "Proposal: Dialysis drugs are always covered for ESRD members on every plan (exception)."
+    layer: coverage
+    kind: grant
+    scope: {codes: ["Q4081", "J2501", "J1756", "J1270"]}
+    params: {conditions_any: [esrd]}
+    outcome: allow
+    priority: 80
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Dialysis drug covered for ESRD member"
+
+  - id: PROP-06
+    clause: "Proposal: Allow 80053 + 80061 on the same claim when modifier 59 is present."
+    layer: edit
+    kind: modifier_exception
+    params: {column1: "80053", column2: "80061", modifier: "59"}
+    outcome: allow
+    priority: 72
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Modifier 59 exception"
+
+  - id: PROP-07
+    clause: "Proposal: Comprehensive metabolic panel (80053) max 6 per policy year (2008 version)."
+    layer: coverage
+    kind: frequency_limit
+    family: cmp-limit
+    scope: {codes: ["80053"]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {GOLD: 6, SILVER: 6, BASIC: 6}
+    outcome: deny_line
+    priority: 50
+    effective: ["2008-01-01", "2009-06-30"]
+    reason: "Metabolic panel {rank} in policy year; limit {limit}"
+
+  - id: PROP-08
+    clause: "Proposal: Blood count without differential (85027) not paid with 85025 (duplicate of E21)."
+    layer: edit
+    kind: pair_edit
+    family: pair-85025-85027
+    params: {column1: "85025", column2: "85027"}
+    outcome: deny_line
+    priority: 70
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "85027 bundled into 85025 on the same claim"

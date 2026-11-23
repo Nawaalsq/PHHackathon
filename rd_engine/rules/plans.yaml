@@ -1,0 +1,20 @@
+# Fictional Daman-style plans. All values are invented for the hackathon.
+# share = share of members assigned to the plan by seed.py.
+# coinsurance = member's share of the payable amount (used by the simulator).
+plans:
+  GOLD:
+    name: "Gold"
+    share: 0.20
+    coinsurance: 0.00
+  SILVER:
+    name: "Silver"
+    share: 0.50
+    coinsurance: 0.10
+  BASIC:
+    name: "Basic"
+    share: 0.30
+    coinsurance: 0.20
+
+# Policy start dates are spread over this window so that policy anniversaries
+# fall throughout the 2008-2010 claims.
+policy_start_window: ["2007-01-01", "2007-11-26"]

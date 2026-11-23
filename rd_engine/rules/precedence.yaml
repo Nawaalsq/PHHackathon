@@ -1,0 +1,17 @@
+# Precedence policy: how the conflict detector decides which of two clashing
+# rules wins. Criteria are applied in order; the first one that separates the
+# two rules decides.
+precedence:
+  - id: P1
+    rule: "A priority gap of 10 or more is a deliberate override: the higher priority wins."
+    min_priority_gap: 10
+  - id: P2
+    rule: "The more specific rule wins (named plans beat all plans; named codes beat a code prefix)."
+  - id: P3
+    rule: "An edit rule wins over a coverage rule on the same line."
+  - id: P4
+    rule: "The rule with the newer effective-from date wins."
+  - id: P5
+    rule: "The stricter rule wins (deny beats allow; a lower limit beats a higher one)."
+  - id: P6
+    rule: "Identical rules: keep the live rule, retire the proposal."
