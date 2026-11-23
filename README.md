@@ -1,22 +1,12 @@
----
-title: Claim Decision Engine
-emoji: 🏥
-colorFrom: indigo
-colorTo: gray
-sdk: docker
-app_port: 7860
-pinned: false
----
-
 # Claim Decision Engine
 
 One rule-based decision system covering three linked products for a health insurer:
 
 | Product | What it does |
 |---|---|
-| **RD02 — Policy Rules Simulator** | What-if analysis on benefit rules before they go live: claims that would change, cost impact, members affected |
-| **RD03 — Fraud/Abuse Triage Board** | A ranked FWA (fraud, waste, abuse) review queue with per-claim reasons, provider triage and reviewer-workload tracking |
-| **RD04 — Claim Edit Rule Conflict Detector** | Finds clashing claim-edit rules, explains which one wins and why, using an explicit precedence policy |
+| **RD02 Policy Rules Simulator** | What-if analysis on benefit rules before they go live: claims that would change, cost impact, members affected |
+| **RD03 Fraud/Abuse Triage Board** | A ranked FWA (fraud, waste, abuse) review queue with per-claim reasons, provider triage and reviewer-workload tracking |
+| **RD04 Claim Edit Rule Conflict Detector** | Finds clashing claim-edit rules, explains which one wins and why, using an explicit precedence policy |
 
 Every decision is deterministic and rule-based, with a full trace: which rule fired, which clause,
 what was paid, held or denied, and why — in plain language (English/Arabic). AI is used only to
@@ -30,18 +20,18 @@ draft and explain rules, never to decide claims.
 ## Architecture
 
 ```
-raw CSVs ──load_desynpuf.py──▶ clean parquet tables
-                                   │
-                        seed.py (fictional plans, exclusions,
-                        seeded anomalies, boundary cases, answer keys)
-                                   │
-                 engine.py ◀── rules/*.yaml (the rule book)
-                    │
-        precompute.py ──▶ results/ parquet (fast app start-up)
-                    │
-        FastAPI (rd_engine/api.py) ── serves JSON API + built React frontend
-                    │
-        React + Vite + Tailwind (web/) ── reviewer dashboard
+raw CSVs ─ load_desynpuf.py → clean parquet tables
+                 │
+        seed.py (fictional plans, exclusions,
+        seeded anomalies, boundary cases, answer keys)
+                 │
+        engine.py ← rules/*.yaml (the rule book)
+                 │
+        precompute.py → results/ parquet (fast app start-up)
+                 │
+        FastAPI (rd_engine/api.py) → JSON API + built React frontend
+                 │
+        React + Vite + Tailwind (web/) → reviewer dashboard
 ```
 
 - **Rule book** (`rd_engine/rules/*.yaml`): coverage clauses, data-quality rules and claim edits,
@@ -103,17 +93,6 @@ To evaluate the engine against the answer keys:
 ```bat
 python rd_engine\evaluate.py --data clean\sample1_dev_seeded --keys answer_keys\sample1_dev
 ```
-
-## Honest results (on an unseen sample)
-
-| Measure | Result |
-|---|---|
-| Boundary cases (37 planted edge cases) | 37/37 correct decision and rule |
-| Easy seeded FWA anomalies | 100% recalled |
-| Subtle seeded anomalies | ~91% recalled |
-| Novel anomalies (no matching rule) | ~62% — the rest honestly surface as gaps |
-| Claim-edit rule conflicts | 9/9 found with the correct winner; 0 conflicts in the live rule set |
-| Reviewer workload | ~80% of easy seeded FWA found within ~1,200 reviewed claims from a ~21k queue |
 
 ## Limits
 
