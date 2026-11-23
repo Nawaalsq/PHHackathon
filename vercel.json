@@ -1,31 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "app": {
-      "root": ".",
-      "framework": "fastapi"
-    },
-    "api": {
-      "root": "api",
-      "framework": "fastapi"
-    },
-    "web": {
-      "root": "web",
-      "framework": "vite"
-    }
-  },
+  "buildCommand": "npm --prefix web install && npm --prefix web run build && mkdir -p api/_bundle/clean api/_bundle/results && cp -r rd_engine api/_bundle/ && cp -r clean/sample1_dev_seeded api/_bundle/clean/ && cp -r results/sample1_dev_seeded api/_bundle/results/ && cp -r answer_keys api/_bundle/answer_keys",
+  "outputDirectory": "web/dist",
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": {
-        "service": "api"
-      }
-    },
-    {
-      "source": "/(.*)",
-      "destination": {
-        "service": "app"
-      }
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{clean,results,answer_keys,web,raw_csv}/**"
     }
-  ]
+  }
 }

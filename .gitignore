@@ -13,6 +13,9 @@ results/*
 !results/sample2_seeded/
 !results/sample2_hard/
 
+# --- Vercel build artifact (created by vercel.json buildCommand) ---
+api/_bundle/
+
 # --- Node / frontend ---
 node_modules/
 web/dist/
