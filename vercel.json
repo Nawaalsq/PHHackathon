@@ -1,14 +1,31 @@
 {
-  "buildCommand": "cd web && npm install --no-audit --no-fund && npm run build && mkdir -p api/_bundle && cp -r rd_engine clean/sample1_dev_seeded results/sample1_dev_seeded answer_keys api/_bundle/",
-  "outputDirectory": "web/dist",
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 60,
-      "includeFiles": "rd_engine/**,clean/sample1_dev_seeded/**,results/sample1_dev_seeded/**,answer_keys/**"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "app": {
+      "root": ".",
+      "framework": "fastapi"
+    },
+    "api": {
+      "root": "api",
+      "framework": "fastapi"
+    },
+    "web": {
+      "root": "web",
+      "framework": "vite"
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "api"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "app"
+      }
+    }
   ]
 }
