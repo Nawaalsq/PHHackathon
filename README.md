@@ -56,7 +56,25 @@ raw CSVs ──load_desynpuf.py──▶ clean parquet tables
   set), grounded explanations in English/Arabic, FWA case notes. Uses the Claude API or CLI when
   available and falls back to a deterministic offline mode.
 
-## Run locally (Windows)
+## Run from a clone (quick demo)
+
+The repo includes a small demo dataset (`clean/sample1_dev_seeded`) plus its precomputed
+engine results, so this works without downloading the raw data:
+
+```bat
+git clone https://github.com/ahsanimran98/claim-decision-engine.git
+cd claim-decision-engine
+pip install -r requirements.txt
+
+REM build the frontend once (web/dist is not committed)
+cd web && npm install && npm run build && cd ..
+
+python -m uvicorn rd_engine.api:app --port 8000
+```
+
+Open http://127.0.0.1:8000 — the app loads with the sample1_dev_seeded demo data.
+
+## Full data pipeline (Windows)
 
 Requires Python 3.10+ with `pandas`, `pyarrow`, `pyyaml`, `fastapi`, `uvicorn`, plus Node 18+
 for the frontend.
