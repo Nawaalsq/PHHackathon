@@ -5,7 +5,7 @@ const Store = createContext(null);
 
 export function StoreProvider({ children }) {
   const [dataset, setDatasetState] = useState(
-    () => localStorage.getItem("dataset") || "clean/sample2_seeded"
+    () => localStorage.getItem("dataset") || "clean/sample1_dev_seeded"
   );
   const [keysDir, setKeysDirState] = useState(
     () => localStorage.getItem("keysDir") || "answer_keys/sample2"

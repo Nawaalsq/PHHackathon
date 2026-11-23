@@ -28,3 +28,6 @@ Untitled*.ipynb
 # --- Old copies kept locally ---
 rd_engine_old/
 rd_engine_o1/
+
+.vercel
+.env*
