@@ -24,7 +24,7 @@ COPY --from=webbuild /app/web/dist web/dist
 
 # The HF Space serves the frontend itself (same origin, no CORS needed);
 # also allow the Vercel frontend origin so both sites work.
-ENV CORS_ORIGINS="https://daman-claim-decision-engine.vercel.app"
+ENV CORS_ORIGINS="https://claim-decision-engine-omega.vercel.app"
 
 EXPOSE 7860
 CMD ["uvicorn", "rd_engine.api:app", "--host", "0.0.0.0", "--port", "7860"]

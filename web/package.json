@@ -1,5 +1,5 @@
 {
-  "name": "daman-claim-decision-engine",
+  "name": "claim-decision-engine",
   "private": true,
   "version": "1.0.0",
   "type": "module",

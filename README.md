@@ -1,5 +1,5 @@
 ---
-title: Daman Claim Decision Engine
+title: Claim Decision Engine
 emoji: 🏥
 colorFrom: indigo
 colorTo: gray
@@ -8,7 +8,7 @@ app_port: 7860
 pinned: false
 ---
 
-# Daman Claim Decision Engine
+# Claim Decision Engine
 
 One rule-based decision system covering three linked products for a health insurer:
 
@@ -23,7 +23,7 @@ what was paid, held or denied, and why — in plain language (English/Arabic). A
 draft and explain rules, never to decide claims.
 
 > **Scope note:** this is a hackathon project running on **synthetic data** (CMS DE-SynPUF
-> public synthetic Medicare claims, 2008–2010, with fictional Daman-style plans layered on top).
+> public synthetic Medicare claims, 2008–2010, with fictional insurer-style plans layered on top).
 > FWA scores measure recall of *seeded* test cases, not real-world fraud detection. All codes in
 > the UI are placeholders, not real CPT terms.
 

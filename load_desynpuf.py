@@ -1,6 +1,6 @@
 """
 load_desynpuf.py - Load one CMS DE-SynPUF sample into clean tables for the
-Daman Claim Decision Engine (RD02 / RD03 / RD04).
+Claim Decision Engine (RD02 / RD03 / RD04).
 
 Usage
 -----

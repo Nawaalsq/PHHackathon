@@ -1,4 +1,4 @@
-# Fictional Daman-style plans. All values are invented for the hackathon.
+# Fictional insurer-style plans. All values are invented for the hackathon.
 # share = share of members assigned to the plan by seed.py.
 # coinsurance = member's share of the payable amount (used by the simulator).
 plans:

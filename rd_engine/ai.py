@@ -1,5 +1,5 @@
 """
-ai.py - AI helpers for the Daman Claim Decision Engine.
+ai.py - AI helpers for the Claim Decision Engine.
 
 The rules engine makes every decision. AI only DRAFTS rules (a person approves
 them) and WRITES explanations from the engine's own trace. Every rule ID the AI

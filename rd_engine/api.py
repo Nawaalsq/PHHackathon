@@ -1,5 +1,5 @@
 """
-api.py - FastAPI backend for the Daman Claim Decision Engine.
+api.py - FastAPI backend for the Claim Decision Engine.
 
 Serves the precomputed results written by precompute.py (results/<name>/) as
 JSON for the React frontend in web/. Falls back to a live engine.run for
@@ -36,7 +36,7 @@ import engine
 import evaluate
 import guidance
 
-app = FastAPI(title="Daman Claim Decision Engine")
+app = FastAPI(title="Claim Decision Engine")
 # Frontend origins: local Vite dev server by default, plus any extra origins
 # (comma-separated) given via CORS_ORIGINS — e.g. the deployed frontend URL.
 _extra_origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()]

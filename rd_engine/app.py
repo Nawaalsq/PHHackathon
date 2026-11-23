@@ -1,5 +1,5 @@
 """
-app.py - Reviewer board for the Daman Claim Decision Engine.
+app.py - Reviewer board for the Claim Decision Engine.
 
 Run from the folder that holds clean/ and answer_keys/:
     streamlit run rd_engine/app.py
@@ -26,7 +26,7 @@ import ai
 import engine
 import evaluate
 
-st.set_page_config(page_title="Daman Claim Decision Engine", layout="wide")
+st.set_page_config(page_title="Claim Decision Engine", layout="wide")
 
 DECISIONS = ["paid", "partial", "pended", "denied", "rejected"]
 BADGE = {"paid": "🟢", "partial": "🟡", "pended": "🟠", "denied": "🔴", "rejected": "⚫"}

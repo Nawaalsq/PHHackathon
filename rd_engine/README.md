@@ -1,4 +1,4 @@
-# Daman Claim Decision Engine — rules, seeding, engine, evaluation
+# Claim Decision Engine — rules, seeding, engine, evaluation
 
 Fictional rules running on real (synthetic CMS DE-SynPUF) claims. Covers RD02 (policy rules),
 RD03 (FWA triage) and RD04 (claim edits and rule conflicts).

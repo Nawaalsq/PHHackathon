@@ -1,5 +1,5 @@
 """
-engine.py - Rule engine for the Daman Claim Decision Engine (RD02/RD03/RD04).
+engine.py - Rule engine for the Claim Decision Engine (RD02/RD03/RD04).
 
 Runs the YAML rules in ./rules on the clean tables written by load_desynpuf.py
 (or the seeded tables written by seed.py) and returns, for every claim:
