@@ -1,3 +1,13 @@
+---
+title: Daman Claim Decision Engine
+emoji: 🏥
+colorFrom: indigo
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Daman Claim Decision Engine
 
 One rule-based decision system covering three linked products for a health insurer:
