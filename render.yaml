@@ -1,0 +1,18 @@
+services:
+  # FastAPI backend: serves the JSON API + precomputed demo results.
+  # Data: clean/sample1_dev_seeded + results/sample1_dev_seeded are committed
+  # (~20 MB), so this runs out of the box without the raw CSVs.
+  - type: web
+    name: daman-engine-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn rd_engine.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      # Comma-separated frontend origins allowed to call this API.
+      # Set this to your Vercel URL after the frontend deploy, e.g.
+      # https://daman-claim-decision-engine.vercel.app
+      - key: CORS_ORIGINS
+        sync: false

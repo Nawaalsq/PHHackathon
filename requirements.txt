@@ -1,0 +1,8 @@
+pandas
+numpy
+pyarrow
+pyyaml
+pydantic
+fastapi
+uvicorn
+anthropic

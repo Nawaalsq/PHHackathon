@@ -1,10 +1,13 @@
 # --- Data (regenerable / too large for git) ---
 # Raw DE-SynPUF CSVs — download from CMS instead of committing (~2 GB)
 *.csv
-# Clean parquet tables — regenerable via load_desynpuf.py
-clean/
+# Clean parquet tables — regenerable via load_desynpuf.py, except the small
+# dev subset committed so the deployed backend has demo data (~16 MB)
+clean/*
+!clean/sample1_dev_seeded/
 # Precomputed engine results — regenerable via precompute.py
-results/
+results/*
+!results/sample1_dev_seeded/
 
 # --- Node / frontend ---
 node_modules/

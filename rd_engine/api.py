@@ -37,7 +37,10 @@ import evaluate
 import guidance
 
 app = FastAPI(title="Daman Claim Decision Engine")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+# Frontend origins: local Vite dev server by default, plus any extra origins
+# (comma-separated) given via CORS_ORIGINS — e.g. the deployed frontend URL.
+_extra_origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()]
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", *_extra_origins],
                    allow_methods=["*"], allow_headers=["*"])
 
 DECISIONS = guidance.DECISIONS
