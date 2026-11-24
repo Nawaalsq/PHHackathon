@@ -212,7 +212,7 @@ PATTERNS = {
     "consecutive_3_days": ("subtle", True), "alternate_days": ("subtle", True),
     "facility_3x": ("subtle", True), "near_duplicate_amount": ("subtle", True),
     "near_duplicate_next_day": ("subtle", True), "unbundling_other_component": ("subtle", False),
-    # novel: no detector was written for these
+    # novel: harder signals, detected by later FWA rules (upcoding via FWA-02, mass billing via FWA-04)
     "upcoding_drift": ("novel", True), "same_day_mass_billing": ("novel", True),
 }
 
@@ -289,16 +289,16 @@ def seed_hard(t, b, rng, scale, keys, report, used_providers):
     for _, c in pick(op, n(10)).iterrows():
         nid = b.new_id("HN")
         b.clone(c, lines_of(c["claim_id"]), nid, c["from_dt"] + pd.Timedelta(days=1))
-        keys.append((nid, "near_duplicate_next_day", "EDIT-03|EDIT-04"))
+        keys.append((nid, "near_duplicate_next_day", "EDIT-03|EDIT-04|FWA-03"))
 
-    # S5 unbundling with a component we have no pair edit for (glucose 82947 with 80053)
+    # S5 unbundling with a component caught by the 82947+80053 pair edit
     has53 = set(lines.loc[lines["code"] == "80053", "claim_id"])
     has47 = set(lines.loc[lines["code"] == "82947", "claim_id"])
     for _, c in pick(op[op["claim_id"].isin(has53 - has47)], n(20)).iterrows():
         nid = b.new_id("HU")
         b.clone(c, lines_of(c["claim_id"]), nid,
                 c["from_dt"] + pd.Timedelta(days=int(rng.integers(7, 60))), extra_codes=["82947"])
-        keys.append((nid, "unbundling_other_component", "no_rule"))
+        keys.append((nid, "unbundling_other_component", "EDIT-22"))
 
     # N1 upcoding drift: a provider's 99213 visits re-billed later as 99215
     v = opl[opl["code"] == "99213"]

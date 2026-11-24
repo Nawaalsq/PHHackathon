@@ -421,6 +421,23 @@ def k_peer_outlier(rule, claims, lines, t):
     return _hits(l, rule, outcome="flag", score=score)
 
 
+def k_same_day_mass(rule, claims, lines, t):
+    """One provider billing the same code to many different members on the same
+    day (FWA-04) — mass billing with no care relationship."""
+    p = rule["params"]
+    l = lines[lines["service_dt"].notna() & lines["provider_id"].notna()]
+    if l.empty:
+        return pd.DataFrame(columns=HIT_COLS)
+    g = (l.groupby(["provider_id", "code", "service_dt"])
+          ["member_id"].nunique().reset_index(name="members"))
+    bad = g[g["members"] >= p["min_members"]]
+    if bad.empty:
+        return pd.DataFrame(columns=HIT_COLS)
+    l = l.merge(bad[["provider_id", "code", "service_dt", "members"]],
+                on=["provider_id", "code", "service_dt"])
+    return _hits(l, rule, outcome="flag", score=rule.get("score", 0.9))
+
+
 RULE_KINDS = {name[2:]: fn for name, fn in list(globals().items()) if name.startswith("k_")}
 
 

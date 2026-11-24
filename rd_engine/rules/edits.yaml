@@ -148,6 +148,17 @@ rules:
     effective: ["2007-01-01", "2099-12-31"]
     reason: "85027 bundled into 85025 on the same claim"
 
+  - id: EDIT-22
+    clause: "E22 Glucose test (82947) is a component of the comprehensive metabolic panel (80053) and is not paid when both are on the same claim."
+    layer: edit
+    kind: pair_edit
+    family: pair-80053-82947
+    params: {column1: "80053", column2: "82947"}
+    outcome: deny_line
+    priority: 70
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "82947 bundled into 80053 on the same claim"
+
   # ---------------------------------------------------------- companion edits
   - id: EDIT-30
     clause: "E30 Sedation drugs (J2250 midazolam, J3010 fentanyl) need a surgical or endoscopy procedure (10000-69999) on the same claim; otherwise the claim is pended."

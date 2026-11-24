@@ -2,12 +2,12 @@
   "data": "clean/sample2_hard",
   "engine_summary": {
     "data": "clean/sample2_hard",
-    "rules": 26,
+    "rules": 28,
     "proposals": false,
     "claims": 848986,
     "decisions": {
-      "paid": 785503,
-      "partial": 30000,
+      "paid": 783861,
+      "partial": 31642,
       "pended": 19792,
       "denied": 11086,
       "rejected": 2605
@@ -22,6 +22,7 @@
       "COV-1.1": 6141,
       "EDIT-01": 4351,
       "EDIT-11": 2749,
+      "EDIT-22": 2721,
       "DQ-01": 2605,
       "EDIT-04": 2295,
       "DQ-03": 2258,
@@ -33,25 +34,435 @@
       "FWA-01": 443,
       "COV-1.3": 310,
       "EDIT-03": 147,
+      "FWA-04": 109,
       "EDIT-13": 87,
       "COV-3.1": 44,
       "COV-2.3": 41,
       "COV-1.2": 27,
       "COV-2.1": 17
     },
-    "fwa_flagged_claims": 21278,
+    "fwa_flagged_claims": 21352,
     "allowed_amt": 859853438.89,
-    "payable_amt": 797106082.48,
-    "plan_paid_amt": 709737053.1,
+    "payable_amt": 797027322.81,
+    "plan_paid_amt": 709666966.55,
     "conflicts": 0,
     "superseded": [],
-    "seconds": 51.9
+    "seconds": 47.6
   },
   "boundary": {
     "cases": 37,
     "decision_accuracy": 1.0,
     "rule_trace_accuracy": 1.0,
-    "failures": []
+    "failures": [],
+    "all_cases": [
+      {
+        "case_id": "01",
+        "claim_id": "B01-006",
+        "description": "Silver physio: 6th session in policy year (limit 6)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "02",
+        "claim_id": "B02-013",
+        "description": "Silver physio: 7th session in policy year",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.1",
+        "primary_rule": "COV-2.1",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "03",
+        "claim_id": "B03-045",
+        "description": "Silver physio: 7th session on the policy anniversary (new year)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "04",
+        "claim_id": "B04-052",
+        "description": "Silver physio: 7th session the day before the anniversary",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.1",
+        "primary_rule": "COV-2.1",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "05",
+        "claim_id": "B05-025",
+        "description": "Gold physio: 12th session (limit 12)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "06",
+        "claim_id": "B06-038",
+        "description": "Gold physio: 13th session",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.1",
+        "primary_rule": "COV-2.1",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "07",
+        "claim_id": "B07-053",
+        "description": "Basic physio on day 89 of the waiting period",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-3.1",
+        "primary_rule": "COV-3.1",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "08",
+        "claim_id": "B08-054",
+        "description": "Basic physio on day 90 (waiting period over)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "09",
+        "claim_id": "B09-060",
+        "description": "Dialysis drug, member has ESRD",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "10",
+        "claim_id": "B10-061",
+        "description": "Dialysis drug, no ESRD but chronic kidney disease",
+        "expected_decision": "pended",
+        "decision": "pended",
+        "expected_rule": "COV-2.2",
+        "primary_rule": "COV-2.2",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "11",
+        "claim_id": "B11-062",
+        "description": "Dialysis drug, no ESRD, no kidney disease",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.2",
+        "primary_rule": "COV-2.2",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "12",
+        "claim_id": "B12-066",
+        "description": "80053: 4th in policy year (limit 4)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "13",
+        "claim_id": "B13-071",
+        "description": "80053: 5th in policy year",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.3",
+        "primary_rule": "COV-2.3",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "14",
+        "claim_id": "B14-076",
+        "description": "80053: 5th for a diabetic member (limit 6)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "15",
+        "claim_id": "B15-083",
+        "description": "80053: 7th for a diabetic member",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.3",
+        "primary_rule": "COV-2.3",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "16",
+        "claim_id": "B16-088",
+        "description": "No Part B cover in the service year",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-1.1",
+        "primary_rule": "COV-1.1",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "17",
+        "claim_id": "B17-089",
+        "description": "Control: eligible member, office visit",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "18",
+        "claim_id": "B18-091",
+        "description": "Outpatient visit during an inpatient stay",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "EDIT-01",
+        "primary_rule": "EDIT-01",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "19",
+        "claim_id": "B19-093",
+        "description": "Outpatient visit on the discharge date",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "20",
+        "claim_id": "B20-094",
+        "description": "36415 with 3 units (cap 3)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "21",
+        "claim_id": "B21-095",
+        "description": "36415 with 4 units (cap 3), plus another code",
+        "expected_decision": "partial",
+        "decision": "partial",
+        "expected_rule": "EDIT-10",
+        "primary_rule": "EDIT-10",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "22",
+        "claim_id": "B22-096",
+        "description": "80053 and 80048 on the same claim",
+        "expected_decision": "partial",
+        "decision": "partial",
+        "expected_rule": "EDIT-20",
+        "primary_rule": "EDIT-20",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "23",
+        "claim_id": "B23-098",
+        "description": "Sedation drug without a procedure",
+        "expected_decision": "pended",
+        "decision": "pended",
+        "expected_rule": "EDIT-30",
+        "primary_rule": "EDIT-30",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "24",
+        "claim_id": "B24-099",
+        "description": "Sedation drug with a colonoscopy",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "25",
+        "claim_id": "B25-100",
+        "description": "Contrast with a CT scan",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "26",
+        "claim_id": "B26-101",
+        "description": "Contrast without imaging",
+        "expected_decision": "pended",
+        "decision": "pended",
+        "expected_rule": "EDIT-31",
+        "primary_rule": "EDIT-31",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "27",
+        "claim_id": "B27-102",
+        "description": "Service 14 days after death",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-1.2",
+        "primary_rule": "COV-1.2",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "28",
+        "claim_id": "B28-103",
+        "description": "Service on the date of death",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "29",
+        "claim_id": "B29-105",
+        "description": "Exact duplicate of an earlier claim",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "EDIT-03",
+        "primary_rule": "EDIT-03",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "30",
+        "claim_id": "B30-107",
+        "description": "Same code same day on a second claim (different provider)",
+        "expected_decision": "partial",
+        "decision": "partial",
+        "expected_rule": "EDIT-04",
+        "primary_rule": "EDIT-04",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "31",
+        "claim_id": "B31-108",
+        "description": "Negative payment amount",
+        "expected_decision": "rejected",
+        "decision": "rejected",
+        "expected_rule": "DQ-01",
+        "primary_rule": "DQ-01",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "32",
+        "claim_id": "B32-097",
+        "description": "85025 and 85027 on the same claim",
+        "expected_decision": "partial",
+        "decision": "partial",
+        "expected_rule": "EDIT-21",
+        "primary_rule": "EDIT-21",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "33",
+        "claim_id": "B33-059",
+        "description": "Basic physio: 5th session after waiting period (limit 4)",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.1",
+        "primary_rule": "COV-2.1",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "34",
+        "claim_id": "B34-085",
+        "description": "HbA1c: 2nd in policy year, not diabetic (limit 1)",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-2.4",
+        "primary_rule": "COV-2.4",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "35",
+        "claim_id": "B35-087",
+        "description": "HbA1c: 2nd in policy year, diabetic (limit 4)",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "36",
+        "claim_id": "B36-109",
+        "description": "Excluded provider, service after exclusion date",
+        "expected_decision": "denied",
+        "decision": "denied",
+        "expected_rule": "COV-1.3",
+        "primary_rule": "COV-1.3",
+        "decision_ok": true,
+        "rule_ok": true
+      },
+      {
+        "case_id": "37",
+        "claim_id": "B37-110",
+        "description": "Excluded provider, service the day before exclusion",
+        "expected_decision": "paid",
+        "decision": "paid",
+        "expected_rule": "",
+        "primary_rule": "",
+        "decision_ok": true,
+        "rule_ok": true
+      }
+    ]
   },
   "anomalies": {
     "by_pattern": {
@@ -127,24 +538,24 @@
       },
       "near_duplicate_next_day": {
         "difficulty": "subtle",
-        "detector": "EDIT-03|EDIT-04",
+        "detector": "EDIT-03|EDIT-04|FWA-03",
         "seeded": 10,
-        "detected": 0,
-        "recall": 0.0
+        "detected": 10,
+        "recall": 1.0
       },
       "unbundling_other_component": {
         "difficulty": "subtle",
-        "detector": "no_rule",
+        "detector": "EDIT-22",
         "seeded": 20,
-        "detected": 0,
-        "recall": 0.0
+        "detected": 20,
+        "recall": 1.0
       },
       "same_day_mass_billing": {
         "difficulty": "novel",
         "detector": "any_fwa",
         "seeded": 60,
-        "detected": 0,
-        "recall": 0.0
+        "detected": 60,
+        "recall": 1.0
       },
       "upcoding_drift": {
         "difficulty": "novel",
@@ -162,22 +573,22 @@
       },
       "subtle": {
         "seeded": 320,
-        "detected": 290,
-        "recall": 0.906
+        "detected": 320,
+        "recall": 1.0
       },
       "novel": {
         "seeded": 160,
-        "detected": 100,
-        "recall": 0.625
+        "detected": 160,
+        "recall": 1.0
       }
     },
-    "overall_recall": 0.925,
-    "fwa_queue_size": 21278,
+    "overall_recall": 1.0,
+    "fwa_queue_size": 21352,
     "fwa_seeded_claims": 698,
     "fwa_seeded_in_queue": 698,
-    "claims_to_open_for_80pct": 1181,
-    "queue_precision_at_that_point": 0.473,
-    "subtle_novel_fwa_claims_reaching_queue": "397/460"
+    "claims_to_open_for_80pct": 1290,
+    "queue_precision_at_that_point": 0.433,
+    "subtle_novel_fwa_claims_reaching_queue": "457/460"
   },
   "conflicts": {
     "expected": 9,

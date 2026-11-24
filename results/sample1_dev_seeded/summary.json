@@ -1,11 +1,11 @@
 {
   "data": "clean/sample1_dev_seeded",
-  "rules": 26,
+  "rules": 28,
   "proposals": false,
   "claims": 146694,
   "decisions": {
-    "paid": 135452,
-    "partial": 5107,
+    "paid": 135158,
+    "partial": 5401,
     "pended": 3450,
     "denied": 2218,
     "rejected": 467
@@ -20,6 +20,7 @@
     "EDIT-31": 1029,
     "EDIT-01": 737,
     "EDIT-11": 504,
+    "EDIT-22": 477,
     "DQ-01": 467,
     "DQ-03": 412,
     "EDIT-04": 389,
@@ -30,6 +31,7 @@
     "EDIT-10": 152,
     "COV-2.4": 86,
     "EDIT-12": 81,
+    "FWA-04": 60,
     "EDIT-03": 43,
     "COV-1.2": 27,
     "EDIT-13": 15,
@@ -37,11 +39,11 @@
     "COV-3.1": 11,
     "COV-2.1": 7
   },
-  "fwa_flagged_claims": 2141,
+  "fwa_flagged_claims": 2201,
   "allowed_amt": 149606089.17,
-  "payable_amt": 138649941.69,
-  "plan_paid_amt": 123374924.27,
+  "payable_amt": 138636652.52,
+  "plan_paid_amt": 123363063.91,
   "conflicts": 0,
   "superseded": [],
-  "seconds": 6.9
+  "seconds": 6.7
 }

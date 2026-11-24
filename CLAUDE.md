@@ -30,8 +30,8 @@ Sample 1 = build/tune, Sample 2 = test (unseen), Sample 3 = spare. Members don't
 | `precompute.py` | runs the engine over data folders and saves results to `results/<name>/` (decisions/hits parquet + rule_ids.json) for fast app start-up |
 | `seed.py` | adds plans, exclusions, seeded anomalies (`--hard` adds subtle + novel), boundary cases, answer keys |
 | `evaluate.py` | scores against answer keys: boundary accuracy, anomaly recall by difficulty, reviewer workload, conflicts |
-| `ai.py` | AI helpers: clause→rule drafting (validated), grounded explanations (EN/AR), FWA case notes. Backends: Claude Code CLI (`claude -p --output-format json`, prompt via stdin) / Anthropic API / offline. Cache in `.ai_cache/` |
-| `api.py` | FastAPI backend (port 8000) serving `results/<name>/` as JSON + the built React frontend from `web/dist`. Must insert `rd_engine` into sys.path and chdir to the project root BEFORE importing ai/engine/evaluate (flat imports). AI/eval routes wrap ai.py/evaluate.py. Member profiles: `GET /api/members` (search + condition filter), `GET /api/member/{id}` (condition timeline, diagnoses, claims), `POST /api/ai/member-brief` (English AI brief). AI shadow review: `POST /api/ai/shadow-review` — independent LLM reading of the rule book vs engine decisions; disagreements = rule ambiguity candidates (cached in SHADOW). In-memory demo state: reviews, scenarios, drafts |
+| `ai.py` | AI helpers: clause→rule drafting (validated), grounded explanations (EN/AR), FWA case notes, provider briefs (section 7). Backends: Claude Code CLI (`claude -p --output-format json`, prompt via stdin) / Anthropic API / offline. Cache in `.ai_cache/` |
+| `api.py` | FastAPI backend (port 8000) serving `results/<name>/` as JSON + the built React frontend from `web/dist`. Must insert `rd_engine` into sys.path and chdir to the project root BEFORE importing ai/engine/evaluate (flat imports). AI/eval routes wrap ai.py/evaluate.py. Member profiles: `GET /api/members` (search + condition filter), `GET /api/member/{id}` (condition timeline, diagnoses, claims), `POST /api/ai/member-brief` (English AI brief), `POST /api/ai/provider-brief` (AI provider triage brief, grounded in the provider's stats + fired rule ids). AI shadow review: `POST /api/ai/shadow-review` — independent LLM reading of the rule book vs engine decisions; disagreements = rule ambiguity candidates (cached in SHADOW). In-memory demo state: reviews, scenarios, drafts |
 | `guidance.py` | ported from app.py: plain_explanation (returns {"text"}), APPEAL_HINTS, appeal_guidance — no Streamlit |
 | `app.py` | old Streamlit board (kept, no longer primary). 9 tabs, appeal guidance, review workflow, scenario save/compare |
 
@@ -62,15 +62,16 @@ PY -m streamlit run rd_engine/app.py
 ```
 
 ## Baseline results (keep these from regressing)
-On Sample 2 hard: boundary cases 37/37 (decision and rule); easy anomalies 100%; subtle ~91%
+On Sample 2 hard: boundary cases 37/37 (decision and rule); easy anomalies 100%; subtle 100%
 (FWA-01 min_run 3 + alternate-day runs min_run_alt 4; FWA-02 ratio 2.0 — catches facility_3x,
-which seeds at ~3x rate but ~2.75x vs the peer median; remaining misses: near_dup_next_day 0/10
-expected EDIT-03|EDIT-04, unbundling_other 0/20 no_rule); novel ~62% (upcoding_drift 100/100 via
-the widened FWA-02; same_day_mass_billing 0/60 — no detector yet); reviewer opens ~1,181 claims to
-catch 80% of easy seeded FWA (queue ~21,300; was ~1,016 / ~2,050 before the FWA-01/02 widening);
-subtle/novel FWA claims reaching the queue 397/460; conflicts 9/9 with the right winner; 0
-conflicts in the live rule set. Full sample runs in ~45 s, dev subset in ~5 s; precomputed
-results load in ~0.1 s.
+which seeds at ~3x rate but ~2.75x vs the peer median; near_dup_next_day 10/10 via FWA-03 after
+the key's expectation gained FWA-03, unbundling_other 20/20 via EDIT-22 82947+80053); novel 100%
+(upcoding_drift 100/100 via the widened FWA-02; same_day_mass_billing 60/60 via FWA-04
+same-day mass billing, min_members 8 — zero benign groups ≥6 on Sample 1); reviewer opens ~1,290
+claims to catch 80% of easy seeded FWA (queue ~21,352; was ~1,181 / ~21,300 — the +60 mass-billing
+flags rank high, each open catches a real seeded claim); subtle/novel FWA claims reaching the
+queue 457/460; conflicts 9/9 with the right winner; 0 conflicts in the live rule set. Full sample
+runs in ~50 s, dev subset in ~7 s; precomputed results load in ~0.1 s.
 **After any engine or rule change, rerun evaluate.py on a dev seeded set and check these.**
 FWA-01/FWA-02 were tuned on Sample 1 (short_score 0.7 for 3-day/alternate runs so they rank below
 easy flags; FWA-02 ratio 2.0 adds only ~3 benign pairs on Sample 1).
