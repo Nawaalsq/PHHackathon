@@ -244,6 +244,11 @@ class MemberBriefIn(BaseModel):
     member_id: str
 
 
+class ProviderBriefIn(BaseModel):
+    dataset: str
+    provider_id: str
+
+
 # ====================================================================== helpers
 def build_ids(disabled, added):
     live = [r["id"] for r in get_rules() if r["source_file"] != engine.PROPOSAL_FILE]
@@ -969,6 +974,18 @@ def ai_narrate_scenario(body: NarrateIn):
 def ai_member_brief(body: MemberBriefIn):
     profile = member_profile_data(body.member_id, body.dataset)
     text, src, warns = ai.member_brief(jsonable(profile))
+    return {"text": text, "source": src, "warnings": warns}
+
+
+@app.post("/api/ai/provider-brief")
+def ai_provider_brief(body: ProviderBriefIn):
+    detail = jsonable(provider_detail(body.provider_id, body.dataset))
+    detail["provider_id"] = body.provider_id
+    # the rule ids that actually fired for this provider — grounding set for the brief
+    res = get_res(body.dataset)
+    cl = set(res["decisions"].loc[res["decisions"]["provider_id"] == body.provider_id, "claim_id"])
+    detail["rule_ids"] = sorted(set(res["hits"].loc[res["hits"]["claim_id"].isin(cl), "rule_id"]))
+    text, src, warns = ai.provider_brief(detail)
     return {"text": text, "source": src, "warnings": warns}
 
 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import Markdown from "react-markdown";
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
-import { getJson } from "../api.js";
+import { getJson, postJson } from "../api.js";
 import { useStore } from "../store.jsx";
 import { PageIntro, Card, DataTable, DecisionBadge, ErrorState, Loading, SkeletonPage, StatTile } from "../components/ui.jsx";
 import { ACCENT, CHART, DECISION_COLORS, fmtMoney, fmtPct } from "../theme.js";
@@ -21,17 +22,30 @@ export default function ProviderTriage() {
   const [q, setQ] = useState("");
   const [detail, setDetail] = useState(null);
   const [error, setError] = useState(null);
+  const [aiOut, setAiOut] = useState(null);
+  const [aiBusy, setAiBusy] = useState(false);
 
   useEffect(() => {
-    setList(null); setPick(null); setDetail(null); setError(null);
+    setList(null); setPick(null); setDetail(null); setError(null); setAiOut(null);
     getJson("/api/providers", { dataset, page_size: 200 }).then(setList).catch(setError);
   }, [dataset]);
 
   useEffect(() => {
+    setDetail(null); setAiOut(null);
     if (!pick) return;
-    setDetail(null);
     getJson(`/api/providers/${pick}`, { dataset }).then(setDetail).catch(setError);
   }, [pick, dataset]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const writeBrief = async () => {
+    setAiBusy(true); setAiOut(null);
+    try {
+      setAiOut(await postJson("/api/ai/provider-brief", { dataset, provider_id: pick }));
+    } catch (e) {
+      setAiOut({ text: String(e.message), source: "error", warnings: [] });
+    } finally {
+      setAiBusy(false);
+    }
+  };
 
   if (error) return <ErrorState error={error} />;
   if (!list) return <SkeletonPage tiles={4} />;
@@ -139,6 +153,26 @@ export default function ProviderTriage() {
               </Card>
             </div>
           </div>
+
+          <Card title="✨ AI provider brief"
+                caption="A reading of this provider's billing characteristics and patterns of interest, written only from the triage card data. Flags are prompts for review, not findings.">
+            <button onClick={writeBrief} disabled={aiBusy} className="btn mb-3">
+              {aiBusy ? "Reading the triage card…" : "Write provider brief"}
+            </button>
+            {aiOut && (
+              <div>
+                <div className="text-sm leading-relaxed rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
+                  <Markdown>{aiOut.text}</Markdown>
+                </div>
+                <div className="text-xs text-zinc-500 mt-2">
+                  Source: {aiOut.source}. Written only from the triage card above; rule IDs are checked against this provider's signals.
+                </div>
+                {aiOut.warnings?.map((w, i) => (
+                  <div key={i} className="text-amber-300 text-xs mt-1">⚠ {w}</div>
+                ))}
+              </div>
+            )}
+          </Card>
 
           <Card title={`Flagged claims (${detail.flagged_claims.length.toLocaleString()})`}>
             <DataTable

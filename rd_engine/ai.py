@@ -640,3 +640,70 @@ def member_brief(profile):
         return text, ("offline" if str(e) == "offline" else f"offline (AI failed: {e})"), []
     bad, _ = grounding_check(text, set(profile.get("rule_ids") or []))
     return text.strip(), src, ([f"Mentions rule(s) not in this member's claims: {', '.join(bad)}"] if bad else [])
+
+
+# ====================================================================== 7. provider brief
+def provider_brief(profile):
+    """Provider triage dict (api.provider_detail) -> grounded brief on the provider's
+    billing characteristics and patterns of interest (text, source, warnings).
+    Describes; never accuses — a flag is a prompt for review."""
+    m = profile.get("metrics") or {}
+    peers = profile.get("peer_codes") or []
+    outlier = ", ".join(f"{p['code']} at {p['ratio']:.1f}x the peer median "
+                        f"({p['rate']:.1f} vs {p['peer_median']:.1f} per patient)"
+                        for p in peers if p.get("warning")) or "no code at 4x or more of the peer median"
+    top_peer = "; ".join(f"{p['code']}: {p['count']} services, {p['patients']} patients"
+                         for p in peers[:4]) or "no code-level data"
+    ov = profile.get("office_visit_mix") or []
+    ov_txt = "; ".join(f"{r['year']}: " +
+                       " ".join(f"{c}={r.get(c, 0)}" for c in ("99212", "99213", "99214", "99215"))
+                       for r in ov) or "no office-visit codes"
+    monthly = profile.get("flags_by_month") or []
+    months = ", ".join(f"{r['month']}: {r['count']}" for r in monthly[:12]) or "none"
+    claims = profile.get("flagged_claims") or []
+    reasons = {}
+    for c in claims:
+        for r in (c.get("fwa_reasons") or "").split(" | "):
+            if r:
+                reasons[r] = reasons.get(r, 0) + 1
+    top_reasons = "; ".join(f"{r} ({n} claim(s))" for r, n in
+                            sorted(reasons.items(), key=lambda x: -x[1])[:5]) or "no flagged claims"
+    facts = (
+        f"Provider {profile.get('provider_id')}\n"
+        + f"Claims: {m.get('claims')}, members: {m.get('members')}, "
+        f"FWA-flagged: {m.get('flagged')} ({m.get('flagged_share', 0):.0%} of claims)\n"
+        + f"Billed {m.get('billed')}, plan paid {m.get('plan_paid')}\n"
+        + f"Codes vs peers (4x+ median is a signal): {outlier}\n"
+        + f"Top services: {top_peer}\n"
+        + f"Office-visit mix by year (99212-99215): {ov_txt}\n"
+        + f"Flagged claims by month: {months}\n"
+        + f"Top flag reasons: {top_reasons}")
+    prompt = ("You are helping a fraud, waste and abuse reviewer at a health insurer triage a "
+              "provider's billing behaviour.\n"
+              "Write a short provider brief as structured paragraphs. Format: each paragraph opens "
+              "with a bolded lead-in phrase ending in a period, e.g. **Billing profile.**, "
+              "followed by 1-3 sentences. Four paragraphs: **Billing profile.** (volume, flagged "
+              "share), **Peer comparison.** (which codes stand out against the peer median, if any), "
+              "**Patterns of interest.** (trends over time, the detector signals that fired, what "
+              "a reviewer should look at first), **Keep in mind.** (possible innocent explanations, "
+              "case-mix caveats). Paragraphs separated by blank lines. No headings, no numbered "
+              "lists, no bullet lists, no all-caps.\n"
+              "Rules: use ONLY the facts below; do not accuse anyone — a flag is a prompt for "
+              "review, not a finding; a ratio above the peer median can reflect case mix; name "
+              "rule IDs in brackets where relevant; at most 130 words.\n\n"
+              "FACTS:\n" + facts)
+    try:
+        text, src = ask(prompt)
+    except AIError as e:
+        flagged = m.get("flagged") or 0
+        share = f"{(m.get('flagged_share') or 0):.0%}"
+        text = (f"**Billing profile.** {m.get('claims')} claims across {m.get('members')} members, "
+                f"{flagged} flagged for review ({share}). Billed {m.get('billed')}.\n\n"
+                f"**Peer comparison.** {outlier}.\n\n"
+                f"**Patterns of interest.** {top_reasons}.\n\n"
+                "**Keep in mind.** Peer ratios can reflect case mix, and flags are prompts for "
+                "review, not findings.")
+        return text, ("offline" if str(e) == "offline" else f"offline (AI failed: {e})"), []
+    allowed = set(profile.get("rule_ids") or [])
+    bad, _ = grounding_check(text, allowed)
+    return text.strip(), src, ([f"Mentions rule id(s) not in this provider's signals: {', '.join(bad)}"] if bad else [])
