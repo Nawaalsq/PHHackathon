@@ -56,7 +56,7 @@ export default function Evaluation() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card title="Boundary cases (RD02 / RD04)"
-              caption="All planted edge cases: what each one tests, the expected decision and rule, and what the engine got. Failures sort first.">
+              caption="All planted edge cases: what each one tests, the expected decision and rule, and what the engine got. Failures sort first. Opening a case lists every claim in the dataset where its rule fires (every claim for the member, for control cases) with the planted claim highlighted.">
           <DataTable
             cols={[
               { key: "case_id", label: "Case", render: (r) => <span className="num">{r.case_id}</span> },
@@ -67,10 +67,17 @@ export default function Evaluation() {
               { key: "primary_rule", label: "Got rule", render: (r) => <span className="num">{r.primary_rule || "-"}</span> },
               { key: "claim", label: "", render: (r) => (r.claim_id ? (
                   <Link className="text-sky-300 hover:underline text-xs whitespace-nowrap"
-                        to={`/claims?q=${encodeURIComponent(r.claim_id)}` +
-                            (r.expected_rule ? `&exp_rule=${encodeURIComponent(r.expected_rule)}` : "") +
-                            (r.expected_decision ? `&exp_dec=${encodeURIComponent(r.expected_decision)}` : "")}>
-                    open ↗
+                        to={r.expected_rule
+                          ? `/claims?rule=${encodeURIComponent(r.expected_rule)}` +
+                            `&sel=${encodeURIComponent(r.claim_id)}` +
+                            `&exp_rule=${encodeURIComponent(r.expected_rule)}` +
+                            (r.expected_decision ? `&exp_dec=${encodeURIComponent(r.expected_decision)}` : "") +
+                            `&case_desc=${encodeURIComponent(r.description)}`
+                          : `/claims?q=${encodeURIComponent(`BND${r.case_id}`)}` +
+                            `&sel=${encodeURIComponent(r.claim_id)}` +
+                            (r.expected_decision ? `&exp_dec=${encodeURIComponent(r.expected_decision)}` : "") +
+                            `&case_desc=${encodeURIComponent(r.description)}`}>
+                    open case ↗
                   </Link>
                 ) : null) },
               { key: "decision_ok", label: "", render: (r) => (r.decision_ok && r.rule_ok

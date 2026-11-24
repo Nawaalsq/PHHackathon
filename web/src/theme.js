@@ -31,18 +31,39 @@ export const GLOW = {
   amber: "0 0 0 3px rgba(217, 119, 6, 0.08), 0 6px 20px rgba(217, 119, 6, 0.10)",
 };
 
-export const fmtMoney = (x) =>
-  x === null || x === undefined ? "-" : Number(x).toLocaleString(undefined, { maximumFractionDigits: 0 });
+// Money: full below 1M, compact above — 950 | 12,345 | 839.2M | 1.2B
+export const fmtMoney = (x) => {
+  if (x === null || x === undefined) return "-";
+  const n = Number(x);
+  if (!Number.isFinite(n)) return "-";
+  const a = Math.abs(n);
+  if (a >= 1e9) return `${n < 0 ? "-" : ""}${(a / 1e9).toFixed(1)}B`;
+  if (a >= 1e6) return `${n < 0 ? "-" : ""}${(a / 1e6).toFixed(1)}M`;
+  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+};
 
-// Compact money for narrow tiles: $950 | $12.4K | $3.4M
+// Compact money for narrow tiles: $950 | $12.4K | $839.2M | $1.2B
 export const fmtMoneyCompact = (x) => {
   if (x === null || x === undefined) return "-";
   const n = Number(x);
   if (!Number.isFinite(n)) return "-";
   const a = Math.abs(n);
+  if (a >= 1e9) return `${n < 0 ? "-" : ""}$${(a / 1e9).toFixed(1)}B`;
   if (a >= 1e6) return `${n < 0 ? "-" : ""}$${(a / 1e6).toFixed(1)}M`;
   if (a >= 1e4) return `${n < 0 ? "-" : ""}$${(a / 1e3).toFixed(1)}K`;
-  return fmtMoney(n);
+  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+};
+
+// Generic compact number (counts and money, tooltips/labels): 950 | 15.2K | 200.1M | 1.2B
+export const fmtCompact = (x) => {
+  if (x === null || x === undefined) return "-";
+  const n = Number(x);
+  if (!Number.isFinite(n)) return "-";
+  const a = Math.abs(n);
+  if (a >= 1e9) return `${n < 0 ? "-" : ""}${(a / 1e9).toFixed(1)}B`;
+  if (a >= 1e6) return `${n < 0 ? "-" : ""}${(a / 1e6).toFixed(1)}M`;
+  if (a >= 1e4) return `${n < 0 ? "-" : ""}${(a / 1e3).toFixed(1)}K`;
+  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
 };
 
 export const fmtPct = (x, digits = 1) =>

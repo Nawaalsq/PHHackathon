@@ -7,7 +7,7 @@ import { getJson } from "../api.js";
 import { useStore } from "../store.jsx";
 import { Card, DataTable, ErrorState, SkeletonPage } from "../components/ui.jsx";
 import { IconFileText, IconFlag, IconArrows, IconActivity } from "../components/icons.jsx";
-import { GLOW, ACCENT, CHART, DECISIONS, DECISION_COLORS, fmtMoney } from "../theme.js";
+import { GLOW, ACCENT, CHART, DECISIONS, DECISION_COLORS, fmtMoney, fmtCompact } from "../theme.js";
 
 const tooltipStyle = {
   backgroundColor: CHART.tooltipBg,
@@ -165,10 +165,10 @@ export default function Overview() {
           <ResponsiveContainer width="100%" height={230}>
             <BarChart data={countRows} layout="vertical" margin={{ left: 8, right: 40 }}>
               <CartesianGrid stroke={CHART.grid} horizontal={false} />
-              <XAxis type="number" tick={{ fill: CHART.tick, fontSize: 11 }} axisLine={false} tickLine={false} />
+              <XAxis type="number" hide />
               <YAxis type="category" dataKey="decision" width={70} tick={{ fill: CHART.tick, fontSize: 11 }}
                      axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#0ea5e908" }} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#0ea5e908" }} formatter={(v) => fmtCompact(v)} />
               <Bar dataKey="claims" barSize={22} radius={[0, 4, 4, 0]}
                    style={{ cursor: "pointer" }}
                    onClick={(bar) => {
@@ -206,10 +206,10 @@ export default function Overview() {
           <ResponsiveContainer width="100%" height={230}>
             <BarChart data={money_by_decision} layout="vertical" margin={{ left: 8, right: 16 }}>
               <CartesianGrid stroke={CHART.grid} horizontal={false} />
-              <XAxis type="number" tick={{ fill: CHART.tick, fontSize: 11 }} axisLine={false} tickLine={false} />
+              <XAxis type="number" hide />
               <YAxis type="category" dataKey="decision" width={70} tick={{ fill: CHART.tick, fontSize: 11 }}
                      axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#0ea5e908" }} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#0ea5e908" }} formatter={(v) => fmtCompact(v)} />
               <Bar dataKey="billed" name="Billed" fill={ACCENT} radius={[0, 4, 4, 0]} />
               <Bar dataKey="payable" name="Payable" fill="#94a3b8" radius={[0, 4, 4, 0]} />
             </BarChart>

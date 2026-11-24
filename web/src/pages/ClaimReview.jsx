@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getJson } from "../api.js";
 import { useStore } from "../store.jsx";
@@ -8,7 +8,7 @@ import ClaimDetail from "./ClaimDetail.jsx";
 
 export default function ClaimReview() {
   const { dataset } = useStore();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [decision, setDecision] = useState("");
   const [rule, setRule] = useState("");
   const [q, setQ] = useState("");
@@ -17,13 +17,16 @@ export default function ClaimReview() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
+  const urlSynced = useRef(false);
   const pageSize = 25;
 
-  // drill-down: ?decision=paid (Overview chart) and ?q=<claim_id> (boundary cases)
+  // drill-down: ?decision=paid (Overview chart), ?rule= and ?q= + ?sel= (boundary cases)
   useEffect(() => {
     const d = searchParams.get("decision");
     setDecision(d && ["paid", "partial", "pended", "denied", "rejected"].includes(d) ? d : "");
+    setRule(searchParams.get("rule") ?? "");
     setQ(searchParams.get("q") ?? "");
+    urlSynced.current = false;
     setPage(1);
   }, [searchParams]);
 
@@ -32,19 +35,36 @@ export default function ClaimReview() {
   }, [dataset]);
 
   useEffect(() => {
-    // arriving from a boundary-case link puts ?q= in the URL — highlight + open that claim
+    // arriving from a boundary-case link: ?q= filters to the member, ?rule= scopes to the rule,
+    // ?sel= opens the planted claim (narrowing the list to it when it is not on this page)
     const urlQ = searchParams.get("q");
+    const urlSel = searchParams.get("sel");
+    // on arrival the filter state lags the URL by one render — skip that stale first fetch
+    const inSync = decision === (searchParams.get("decision") ?? "") &&
+                   rule === (searchParams.get("rule") ?? "") &&
+                   q === (urlQ ?? "");
+    if (!urlSynced.current && !inSync) return;
     const t = setTimeout(() => {
       setData(null); setError(null);
       getJson("/api/claims", { dataset, decision, rule, q, page, page_size: pageSize })
         .then((d) => {
+          urlSynced.current = true;
           setData(d);
-          if (urlQ && d.claims?.length) setSelected((s) => s ?? d.claims[0].claim_id);
+          const has = urlSel && d.claims?.some((c) => c.claim_id === urlSel);
+          if (urlSel && !has && !q) {
+            // planted claim not on this page (large rule sets) — narrow the list to it
+            const sp = new URLSearchParams(searchParams);
+            sp.set("q", urlSel);
+            setSearchParams(sp, { replace: true });
+            return;
+          }
+          if ((urlQ || urlSel) && d.claims?.length)
+            setSelected((s) => s ?? (has ? urlSel : d.claims[0].claim_id));
         })
         .catch(setError);
     }, q ? 300 : 0);
     return () => clearTimeout(t);
-  }, [dataset, decision, rule, q, page]);
+  }, [dataset, decision, rule, q, page, searchParams]);
 
   const cols = [
     { key: "claim_id", label: "Claim", render: (r) => <span className="num">{r.claim_id}</span> },
@@ -94,7 +114,9 @@ export default function ClaimReview() {
                 <select value={rule} onChange={(e) => { setRule(e.target.value); setPage(1); }}
                         className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-2 py-1.5 text-sm text-zinc-200">
                   <option value="">any</option>
-                  {firedRules.map((r) => <option key={r} value={r}>{r}</option>)}
+                  {[...new Set([...firedRules, ...(rule ? [rule] : [])])].map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
                 </select>
               </div>
               <div className="col-span-2">
@@ -108,12 +130,24 @@ export default function ClaimReview() {
             </div>
           </Card>
 
+          {searchParams.get("case_desc") && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+              <span className="font-medium">Boundary case</span> — {searchParams.get("case_desc")}.{" "}
+              {searchParams.get("rule")
+                ? (q === searchParams.get("sel")
+                    ? `Showing the planted claim — clear the search box to see every claim where ${searchParams.get("rule")} fires.`
+                    : "Every claim in the dataset where this rule fires is listed below; the planted case carries the amber marker.")
+                : "Every claim for this member is listed below; the boundary claim carries the amber marker."}
+            </div>
+          )}
           {error && <ErrorState error={error} />}
           {!error && !data && <SkeletonPage tiles={4} />}
           {data && (
             <>
               <DataTable cols={cols} rows={data.claims} keyField="claim_id"
-                         onRowClick={(r) => setSelected(r.claim_id)} selectedKey={selected} />
+                         onRowClick={(r) => setSelected(r.claim_id)} selectedKey={selected}
+                         rowClassFn={(r) => (r.claim_id === searchParams.get("sel")
+                           ? "shadow-[inset_3px_0_0_#f59e0b]" : "")} />
               <Pager page={page} pageSize={pageSize} total={data.total} onPage={setPage} />
             </>
           )}
