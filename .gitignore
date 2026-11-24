@@ -12,6 +12,9 @@ results/*
 !results/sample1_dev_seeded/
 !results/sample2_seeded/
 !results/sample2_hard/
+# conflicts.csv is small and the Vercel bundle needs it; the *.csv rule above
+# is only meant for the raw DE-SynPUF downloads
+!results/sample1_dev_seeded/conflicts.csv
 
 # --- Vercel build artifact (created by vercel.json buildCommand) ---
 api/_bundle/
@@ -24,6 +27,7 @@ web/dist/
 __pycache__/
 *.pyc
 .venv/
+.venv_test/
 venv/
 
 # --- Logs, caches, scratch ---

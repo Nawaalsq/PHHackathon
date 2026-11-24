@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm --prefix web install && npm --prefix web run build && mkdir -p api/_bundle/clean api/_bundle/results && cp -r rd_engine api/_bundle/ && cp -r clean/sample1_dev_seeded api/_bundle/clean/ && cp -r results/sample1_dev_seeded api/_bundle/results/ && cp -r answer_keys api/_bundle/answer_keys",
+  "framework": null,
+  "buildCommand": "bash build.sh",
   "outputDirectory": "web/dist",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.py" },
