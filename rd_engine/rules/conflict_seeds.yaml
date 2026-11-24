@@ -99,3 +99,106 @@ rules:
     priority: 70
     effective: ["2007-01-01", "2099-12-31"]
     reason: "85027 bundled into 85025 on the same claim"
+
+  # ---- 2026-11 additions: more WhatIf / conflict demos ----
+
+  - id: PROP-09
+    clause: "Proposal: Gold physiotherapy limit raised to 20 sessions per policy year."
+    layer: coverage
+    kind: frequency_limit
+    family: physio-limit
+    scope: {codes: ["97110"], plans: [GOLD]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {GOLD: 20}
+    outcome: deny_line
+    priority: 50
+    effective: ["2009-01-01", "2099-12-31"]
+    reason: "Physio session {rank} in policy year; plan limit {limit}"
+
+  - id: PROP-10
+    clause: "Proposal: Venipuncture (36415) reduced to 1 unit per claim."
+    layer: edit
+    kind: unit_cap
+    family: unit-36415
+    scope: {codes: ["36415"]}
+    params: {max_units: 1}
+    outcome: deny_line
+    priority: 65
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "{units} units billed; cap {max_units}"
+
+  - id: PROP-11
+    clause: "Proposal: Blood count (85025) raised to 6 units per claim."
+    layer: edit
+    kind: unit_cap
+    family: unit-85025
+    scope: {codes: ["85025"]}
+    params: {max_units: 6}
+    outcome: deny_line
+    priority: 65
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "{units} units billed; cap {max_units}"
+
+  - id: PROP-12
+    clause: "Proposal: Physiotherapy (97110) always covered for members with rheumatoid/osteoarthritis, regardless of plan limits."
+    layer: coverage
+    kind: grant
+    scope: {codes: ["97110"]}
+    params: {conditions_any: [cc_ra_oa]}
+    outcome: allow
+    priority: 80
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Physio covered for arthritis member"
+
+  - id: PROP-13
+    clause: "Proposal: Chest X-ray (71020) limited to 2 per policy year."
+    layer: coverage
+    kind: frequency_limit
+    family: xray-limit
+    scope: {codes: ["71020"]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {GOLD: 2, SILVER: 2, BASIC: 2}
+    outcome: deny_line
+    priority: 50
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "X-ray {rank} in policy year; limit {limit}"
+
+  - id: PROP-14
+    clause: "Proposal: HbA1c test (83036) max 1 per policy year for all members (remove the diabetes exception)."
+    layer: coverage
+    kind: frequency_limit
+    family: hba1c-limit
+    scope: {codes: ["83036"]}
+    params:
+      count: distinct_service_dates
+      period: policy_year
+      limits: {GOLD: 1, SILVER: 1, BASIC: 1}
+    outcome: deny_line
+    priority: 50
+    effective: ["2009-01-01", "2099-12-31"]
+    reason: "HbA1c test {rank} in policy year; limit {limit}"
+
+  - id: PROP-15
+    clause: "Proposal: Dialysis drugs are covered for members with chronic kidney disease on every plan (exception)."
+    layer: coverage
+    kind: grant
+    scope: {codes: ["Q4081", "J2501", "J1756", "J1270"]}
+    params: {conditions_any: [cc_chronic_kidney]}
+    outcome: allow
+    priority: 80
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Dialysis drug covered for CKD member"
+
+  - id: PROP-16
+    clause: "Proposal: Basic plan excludes all Q-code drugs."
+    layer: coverage
+    kind: exclusion
+    scope: {code_prefix: ["Q"], plans: [BASIC]}
+    outcome: deny_line
+    priority: 85
+    effective: ["2007-01-01", "2099-12-31"]
+    reason: "Q-code drugs excluded on Basic plan"

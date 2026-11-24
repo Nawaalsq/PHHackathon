@@ -47,7 +47,7 @@
     "plan_paid_amt": 123363063.91,
     "conflicts": 0,
     "superseded": [],
-    "seconds": 7.1
+    "seconds": 7.3
   },
   "boundary": {
     "cases": 37,
@@ -595,7 +595,64 @@
     "detected": 9,
     "recall": 1.0,
     "winner_accuracy": 1.0,
-    "unexpected_conflicts": [],
+    "unexpected_conflicts": [
+      [
+        "COV-2.1",
+        "PROP-09"
+      ],
+      [
+        "COV-2.1",
+        "PROP-12"
+      ],
+      [
+        "COV-2.2",
+        "PROP-15"
+      ],
+      [
+        "COV-2.2",
+        "PROP-16"
+      ],
+      [
+        "COV-3.1",
+        "PROP-12"
+      ],
+      [
+        "EDIT-10",
+        "PROP-10"
+      ],
+      [
+        "EDIT-12",
+        "PROP-11"
+      ],
+      [
+        "PROP-01",
+        "PROP-12"
+      ],
+      [
+        "PROP-02",
+        "PROP-12"
+      ],
+      [
+        "PROP-03",
+        "PROP-10"
+      ],
+      [
+        "PROP-04",
+        "PROP-15"
+      ],
+      [
+        "PROP-05",
+        "PROP-16"
+      ],
+      [
+        "PROP-09",
+        "PROP-12"
+      ],
+      [
+        "PROP-15",
+        "PROP-16"
+      ]
+    ],
     "detail": [
       {
         "pair": "PROP-01 + COV-2.1",
