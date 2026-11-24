@@ -1,14 +1,14 @@
 {
-  "buildCommand": "cd web && npm install --no-audit --no-fund && npm run build && mkdir -p api/_bundle && cp -r rd_engine clean/sample1_dev_seeded results/sample1_dev_seeded answer_keys api/_bundle/",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm --prefix web install && npm --prefix web run build && mkdir -p api/_bundle/clean api/_bundle/results && cp -r rd_engine api/_bundle/ && cp -r clean/sample1_dev_seeded api/_bundle/clean/ && cp -r results/sample1_dev_seeded api/_bundle/results/ && cp -r answer_keys api/_bundle/answer_keys",
   "outputDirectory": "web/dist",
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 60,
-      "includeFiles": "rd_engine/**,clean/sample1_dev_seeded/**,results/sample1_dev_seeded/**,answer_keys/**"
-    }
-  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.py" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ]
+  ],
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{clean,results,answer_keys,web,raw_csv}/**"
+    }
+  }
 }
