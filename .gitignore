@@ -1,15 +1,19 @@
 # --- Data (regenerable / too large for git) ---
 # Raw DE-SynPUF CSVs — download from CMS instead of committing (~2 GB)
 *.csv
+# ...except the answer-key CSVs the Evaluation tab needs
+!answer_keys/**/*.csv
 # Clean parquet tables — regenerable via load_desynpuf.py, except the demo
 # subsets committed so clones/deployments have the three demo datasets (~250 MB)
 clean/*
 !clean/sample1_dev_seeded/
+!clean/sample2_dev_seeded/
 !clean/sample2_seeded/
 !clean/sample2_hard/
 # Precomputed engine results — regenerable via precompute.py
 results/*
 !results/sample1_dev_seeded/
+!results/sample2_dev_seeded/
 !results/sample2_seeded/
 !results/sample2_hard/
 

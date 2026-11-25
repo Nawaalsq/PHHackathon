@@ -335,6 +335,19 @@ def datasets():
     return rows
 
 
+@app.get("/api/keys")
+def keys_dirs():
+    """Answer-key folders available for the Evaluation tab (evaluation only)."""
+    out = []
+    for p in sorted(glob(os.path.join("answer_keys", "*", "eval_report.json"))):
+        d = os.path.dirname(p).replace("\\", "/")
+        # complete only when both CSVs the evaluator reads are present
+        ok = (os.path.exists(os.path.join(d, "anomalies.csv"))
+              and os.path.exists(os.path.join(d, "boundary_expected.csv")))
+        out.append({"id": d, "complete": ok})
+    return out
+
+
 # ====================================================================== overview
 @app.get("/api/overview")
 def overview(dataset: str):

@@ -1,0 +1,38 @@
+case_id,description,claim_id,expected_decision,expected_rule
+01,Silver physio: 6th session in policy year (limit 6),B01-006,paid,
+02,Silver physio: 7th session in policy year,B02-013,denied,COV-2.1
+03,Silver physio: 7th session on the policy anniversary (new year),B03-045,paid,
+04,Silver physio: 7th session the day before the anniversary,B04-052,denied,COV-2.1
+05,Gold physio: 12th session (limit 12),B05-025,paid,
+06,Gold physio: 13th session,B06-038,denied,COV-2.1
+07,Basic physio on day 89 of the waiting period,B07-053,denied,COV-3.1
+08,Basic physio on day 90 (waiting period over),B08-054,paid,
+09,"Dialysis drug, member has ESRD",B09-060,paid,
+10,"Dialysis drug, no ESRD but chronic kidney disease",B10-061,pended,COV-2.2
+11,"Dialysis drug, no ESRD, no kidney disease",B11-062,denied,COV-2.2
+12,80053: 4th in policy year (limit 4),B12-066,paid,
+13,80053: 5th in policy year,B13-071,denied,COV-2.3
+14,80053: 5th for a diabetic member (limit 6),B14-076,paid,
+15,80053: 7th for a diabetic member,B15-083,denied,COV-2.3
+16,No Part B cover in the service year,B16-088,denied,COV-1.1
+17,"Control: eligible member, office visit",B17-089,paid,
+18,Outpatient visit during an inpatient stay,B18-091,denied,EDIT-01
+19,Outpatient visit on the discharge date,B19-093,paid,
+20,36415 with 3 units (cap 3),B20-094,paid,
+21,"36415 with 4 units (cap 3), plus another code",B21-095,partial,EDIT-10
+22,80053 and 80048 on the same claim,B22-096,partial,EDIT-20
+23,Sedation drug without a procedure,B23-098,pended,EDIT-30
+24,Sedation drug with a colonoscopy,B24-099,paid,
+25,Contrast with a CT scan,B25-100,paid,
+26,Contrast without imaging,B26-101,pended,EDIT-31
+27,Service 14 days after death,B27-102,denied,COV-1.2
+28,Service on the date of death,B28-103,paid,
+29,Exact duplicate of an earlier claim,B29-105,denied,EDIT-03
+30,Same code same day on a second claim (different provider),B30-107,partial,EDIT-04
+31,Negative payment amount,B31-108,rejected,DQ-01
+32,85025 and 85027 on the same claim,B32-097,partial,EDIT-21
+33,Basic physio: 5th session after waiting period (limit 4),B33-059,denied,COV-2.1
+34,"HbA1c: 2nd in policy year, not diabetic (limit 1)",B34-085,denied,COV-2.4
+35,"HbA1c: 2nd in policy year, diabetic (limit 4)",B35-087,paid,
+36,"Excluded provider, service after exclusion date",B36-109,denied,COV-1.3
+37,"Excluded provider, service the day before exclusion",B37-110,paid,

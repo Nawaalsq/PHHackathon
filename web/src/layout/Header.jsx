@@ -11,6 +11,7 @@ export default function Header({ nav, onTour }) {
   const { pathname } = useLocation();
   const { dataset, setDataset, keysDir, setKeysDir, summary } = useStore();
   const [datasets, setDatasets] = useState([]);
+  const [keyDirs, setKeyDirs] = useState([]);
   const [ai, setAi] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -19,8 +20,26 @@ export default function Header({ nav, onTour }) {
 
   useEffect(() => {
     getJson("/api/datasets").then(setDatasets).catch(() => {});
+    getJson("/api/keys").then((ks) => {
+      setKeyDirs(ks);
+      // stored keys dir may not exist on this deployment — fall back to a sane default
+      setKeysDir((cur) =>
+        ks.length && !ks.some((k) => k.id === cur)
+          ? (ks.find((k) => k.id === "answer_keys/sample2" && k.complete) ?? ks.find((k) => k.complete) ?? ks[0]).id
+          : cur);
+    }).catch(() => {});
     getJson("/api/ai/status").then(setAi).catch(() => {});
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // picking a dataset auto-matches its answer keys: clean/sample1_dev_seeded -> answer_keys/sample1_dev
+  const pickDataset = (id) => {
+    setDataset(id);
+    const base = id.replace("clean/", "");
+    const stem = base.replace(/_(seeded|hard)$/, "");
+    const match = keyDirs.find((k) => k.id === `answer_keys/${base}`)
+               ?? keyDirs.find((k) => k.id === `answer_keys/${stem}`);
+    if (match) setKeysDir(match.id);
+  };
 
   const ready = datasets.filter((d) => d.precomputed);
 
@@ -94,16 +113,27 @@ export default function Header({ nav, onTour }) {
               {settingsOpen && (
                 <div className="absolute right-0 top-10 w-72 glass rounded-xl p-3 shadow-xl shadow-slate-900/10 z-30">
                   <div className="text-xs font-medium text-zinc-200 mb-2">Dataset</div>
-                  <select value={dataset} onChange={(e) => setDataset(e.target.value)}
+                  <select value={dataset} onChange={(e) => pickDataset(e.target.value)}
                           className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-2 py-1.5 text-xs text-zinc-200 mb-3">
                     {ready.map((d) => (
                       <option key={d.id} value={d.id}>{d.id.replace("clean/", "")}</option>
                     ))}
                   </select>
                   <div className="text-xs font-medium text-zinc-200 mb-2">Answer keys (evaluation only)</div>
-                  <input value={keysDir} onChange={(e) => setKeysDir(e.target.value)}
-                         placeholder="answer_keys/sample2"
-                         className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-2 py-1.5 text-xs text-zinc-200" />
+                  {keyDirs.length ? (
+                    <select value={keysDir} onChange={(e) => setKeysDir(e.target.value)}
+                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-2 py-1.5 text-xs text-zinc-200">
+                      {keyDirs.map((k) => (
+                        <option key={k.id} value={k.id}>
+                          {k.id.replace("answer_keys/", "")}{k.complete ? "" : " (missing CSVs)"}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input value={keysDir} onChange={(e) => setKeysDir(e.target.value)}
+                           placeholder="answer_keys/sample2"
+                           className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-2 py-1.5 text-xs text-zinc-200" />
+                  )}
                   <div className="text-[11px] text-zinc-500 mt-2">
                     Used by the Evaluation tab and the FWA workload curve. The engine never reads these.
                   </div>
