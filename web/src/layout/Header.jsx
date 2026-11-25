@@ -19,7 +19,17 @@ export default function Header({ nav, onTour }) {
   const accent = sectionAccent(pathname);
 
   useEffect(() => {
-    getJson("/api/datasets").then(setDatasets).catch(() => {});
+    getJson("/api/datasets")
+      .then((rows) => {
+        setDatasets(rows);
+        // If the stored dataset isn't served (e.g. local-only dataset while
+        // deployed, stale localStorage), fall back to the first precomputed one.
+        const readyRows = rows.filter((d) => d.precomputed);
+        if (readyRows.length && !readyRows.some((d) => d.id === dataset)) {
+          pickDataset(readyRows[0].id);
+        }
+      })
+      .catch(() => {});
     getJson("/api/keys").then((ks) => {
       setKeyDirs(ks);
       // stored keys dir may not exist on this deployment — fall back to a sane default
@@ -29,7 +39,7 @@ export default function Header({ nav, onTour }) {
           : cur);
     }).catch(() => {});
     getJson("/api/ai/status").then(setAi).catch(() => {});
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dataset]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // picking a dataset auto-matches its answer keys: clean/sample1_dev_seeded -> answer_keys/sample1_dev_seeded
   const pickDataset = (id) => {
@@ -93,6 +103,18 @@ export default function Header({ nav, onTour }) {
 
           {/* controls */}
           <div className="flex items-center gap-2">
+            {/* dataset selector, visible in the header (also in the settings popup) */}
+            {ready.length > 0 && (
+              <label className="hidden md:flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold text-zinc-500">
+                Data
+                <select value={dataset} onChange={(e) => pickDataset(e.target.value)}
+                        className="bg-zinc-900 border border-zinc-700 rounded-md px-1.5 py-1 text-xs normal-case tracking-normal text-zinc-200 max-w-[180px]">
+                  {ready.map((d) => (
+                    <option key={d.id} value={d.id}>{d.id.replace("clean/", "")}</option>
+                  ))}
+                </select>
+              </label>
+            )}
             <div className="flex items-center gap-2 text-xs text-zinc-500">
               <span className={`h-2 w-2 rounded-full ${ai?.ok ? "bg-emerald-400" : "bg-zinc-600"}`}
                     style={ai?.ok ? { animation: "pulse-dot 2s ease-in-out infinite" } : undefined}
