@@ -9,7 +9,7 @@ res = engine.run("clean/sample1_dev_seeded", verbose=False)
 hits = res["hits"]
 print("FWA-03 hits total:", int((hits["rule_id"] == "FWA-03").sum()))
 
-keys = pd.read_csv("answer_keys/sample1_dev/anomalies.csv", dtype=str)
+keys = pd.read_csv("answer_keys/sample1_dev_seeded/anomalies.csv", dtype=str)
 nd = keys[keys["pattern"].isin(["near_duplicate_amount", "near_duplicate_next_day"])]
 fwa03_ids = set(hits.loc[hits["rule_id"] == "FWA-03", "claim_id"])
 nd = nd.assign(fwa03=nd["claim_id"].isin(fwa03_ids))

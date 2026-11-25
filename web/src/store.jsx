@@ -8,7 +8,7 @@ export function StoreProvider({ children }) {
     () => localStorage.getItem("dataset") || "clean/sample1_dev_seeded"
   );
   const [keysDir, setKeysDirState] = useState(
-    () => localStorage.getItem("keysDir") || "answer_keys/sample2"
+    () => localStorage.getItem("keysDir") || "answer_keys/sample1_dev_seeded"
   );
   const [drafts, setDrafts] = useState([]);
   const [summary, setSummary] = useState(null);   // {claims, billed} for the command bar

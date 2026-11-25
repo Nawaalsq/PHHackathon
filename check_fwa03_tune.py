@@ -14,7 +14,7 @@ import pandas as pd  # noqa: E402
 import evaluate  # noqa: E402
 
 DATA = "clean/sample1_dev_seeded"
-KEYS = "answer_keys/sample1_dev"
+KEYS = "answer_keys/sample1_dev_seeded"
 
 keys = pd.read_csv(f"{KEYS}/anomalies.csv", dtype=str)
 seeded_nd = set(keys.loc[keys["pattern"].str.startswith("near_duplicate"), "claim_id"])

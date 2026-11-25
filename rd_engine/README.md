@@ -125,9 +125,9 @@ d.sort_values("fwa_score", ascending=False).query("fwa_score > 0")[
 ## Seed and evaluate (build on Sample 1, test on Sample 2)
 
 ```
-python seed.py --clean clean/sample1_dev  --out clean/sample1_dev_seeded --keys answer_keys/sample1_dev
-python seed.py --clean clean/sample2_full --out clean/sample2_seeded     --keys answer_keys/sample2
-python evaluate.py --data clean/sample2_seeded --keys answer_keys/sample2
+python seed.py --clean clean/sample1_dev  --out clean/sample1_dev_seeded --keys answer_keys/sample1_dev_seeded
+python seed.py --clean clean/sample2_full --out clean/sample2_seeded     --keys answer_keys/sample2_seeded
+python evaluate.py --data clean/sample2_seeded --keys answer_keys/sample2_seeded
 ```
 
 In a notebook, prefix with `!` or use `%run`. Keep `answer_keys/` out of the app: it's what you score against.

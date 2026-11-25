@@ -56,8 +56,8 @@ web/). The app runs from `dev.bat` or `PY -m uvicorn rd_engine.api:app --port 80
 
 ```
 PY rd_engine/load_desynpuf.py --data-dir . --sample 1 --out-dir ./clean
-PY rd_engine/seed.py --clean clean/sample1_dev --out clean/sample1_dev_seeded --keys answer_keys/sample1_dev --hard
-PY rd_engine/evaluate.py --data clean/sample1_dev_seeded --keys answer_keys/sample1_dev
+PY rd_engine/seed.py --clean clean/sample1_dev --out clean/sample1_dev_seeded --keys answer_keys/sample1_dev_seeded --hard
+PY rd_engine/evaluate.py --data clean/sample1_dev_seeded --keys answer_keys/sample1_dev_seeded
 PY -m streamlit run rd_engine/app.py
 ```
 

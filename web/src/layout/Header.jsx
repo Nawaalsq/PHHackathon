@@ -25,13 +25,13 @@ export default function Header({ nav, onTour }) {
       // stored keys dir may not exist on this deployment — fall back to a sane default
       setKeysDir((cur) =>
         ks.length && !ks.some((k) => k.id === cur)
-          ? (ks.find((k) => k.id === "answer_keys/sample2" && k.complete) ?? ks.find((k) => k.complete) ?? ks[0]).id
+          ? (ks.find((k) => k.id === "answer_keys/sample2_seeded" && k.complete) ?? ks.find((k) => k.complete) ?? ks[0]).id
           : cur);
     }).catch(() => {});
     getJson("/api/ai/status").then(setAi).catch(() => {});
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // picking a dataset auto-matches its answer keys: clean/sample1_dev_seeded -> answer_keys/sample1_dev
+  // picking a dataset auto-matches its answer keys: clean/sample1_dev_seeded -> answer_keys/sample1_dev_seeded
   const pickDataset = (id) => {
     setDataset(id);
     const base = id.replace("clean/", "");
@@ -131,7 +131,7 @@ export default function Header({ nav, onTour }) {
                     </select>
                   ) : (
                     <input value={keysDir} onChange={(e) => setKeysDir(e.target.value)}
-                           placeholder="answer_keys/sample2"
+                           placeholder="answer_keys/sample2_seeded"
                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-2 py-1.5 text-xs text-zinc-200" />
                   )}
                   <div className="text-[11px] text-zinc-500 mt-2">

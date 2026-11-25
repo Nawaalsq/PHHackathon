@@ -209,8 +209,8 @@ st.sidebar.title("Claim Decision Engine")
 default_data = next((p for p in ["clean/sample2_seeded", "clean/sample1_dev_seeded", "clean/sample1_dev"]
                      if os.path.exists(p)), "clean/sample1_dev")
 data = st.sidebar.text_input("Data folder", default_data)
-default_keys = next((p for p in ["answer_keys/sample2", "answer_keys/sample1_dev"]
-                     if os.path.exists(p)), "answer_keys/sample2")
+default_keys = next((p for p in ["answer_keys/sample2_seeded", "answer_keys/sample1_dev_seeded"]
+                     if os.path.exists(p)), "answer_keys/sample2_seeded")
 keys_dir = st.sidebar.text_input("Answer keys folder (for evaluation)", default_keys)
 
 if not os.path.exists(os.path.join(data, "claims.parquet")):
