@@ -15,6 +15,9 @@ results/*
 # conflicts.csv is small and the Vercel bundle needs it; the *.csv rule above
 # is only meant for the raw DE-SynPUF downloads
 !results/sample1_dev_seeded/conflicts.csv
+# Same for the answer keys: boundary_expected.csv is small, needed by the
+# deployed Evaluation tab, and regenerated deterministically by seed.py
+!answer_keys/*/boundary_expected.csv
 
 # --- Vercel build artifact (created by vercel.json buildCommand) ---
 api/_bundle/
